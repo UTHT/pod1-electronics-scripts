@@ -24,8 +24,8 @@ In addition, a `README.md` Markdown document will accompany each sensor's sketch
 
 - The development requirements/dependencies for this sketch/library;
 - The testing and execution steps;
-- Expected output;
-- Other documentation (i.e. pinout diagrams, schematics, expected output) or references to where they can be found.
+- Expected output (i.e. a screenshot);
+- ***Read-only*** references to where other documentation (pinout diagrams, schematics, expected output, power requirements, etc.) can be found in the UTHT Google Drive.
 
 ## Feature Branches
 
@@ -34,9 +34,9 @@ One feature branch will exist for *each* sensor (i.e. "`sensor-vn200`" for the V
 ### Pull Requests (w/ Testing Documentation)
 
 Feature branches are to be pulled into a **staging** branch, and pull requests **MUST**:
-- Have the team leaders (i.e. Orest, Urmil) listed as "Reviewers" so that they can review the PR;
+- Have the team leaders (Orest, Urmil) listed as "Reviewers" so that they can review the PR;
 - List a summary of changes made in the feature branch commits leading up to the PR;
-- Provide documentation proving working functionality (i.e. whoever is in possession of the sensor corresponding to the feature branch **MUST** be able to *clone*, *setup*, and *run* the code successfully - without modification - meeting the *expected output*);
+- Provide documentation proving working functionality (whoever is in possession of the sensor corresponding to the feature branch **MUST** be able to *clone*, *setup*, and *run* the code successfully - without modification - meeting the *expected output*);
 
 Upon confirmation of successful operation, the PR will be **squash merged** by one of the team leaders as a SemVer-compliant versioned change (i.e. "VN200 Test Sketch V0.1" for an early beta sketch, or "VN200 Library V1.0" for a well-tested library full release).
 
