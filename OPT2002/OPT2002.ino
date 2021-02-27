@@ -5,7 +5,7 @@ int analogPin = A3;		//measurements (6; analog output)
 int error_pin = 11;		//Error Output Message (1; Contamination/Error output(NO))
 
 //this is a weird one, I am not quite sure how this works
-int ELD_pin = 10;		//some sorta control(5; Emitted Light disengageable)
+// int ELD_pin = 10;		//some sorta control(5; Emitted Light disengageable)
 
 float multiplier = 2;	// !!! this value depends on the resistor
 float distance = 0;		//output distance
