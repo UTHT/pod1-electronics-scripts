@@ -11,7 +11,7 @@ float multiplier = 2;	// !!! this value depends on the resistor
 float distance = 0;		//output distance
 float counts = 0;
 float volts = 0;
-const float voltRF = 5; 	//we need to calibrate the Reference of the ADC based of our Arduino, more details in the Doc
+const float voltRF = 3.3; 	//we need to calibrate the Reference of the ADC based of our Arduino, more details in the Doc
 
 String error = "";
 
