@@ -1,6 +1,6 @@
-# Serial CAN Bus Module
+# Serial CAN Bus
 
-> Documentation for the **Serial CAN Bus Module** can be found [here](https://drive.google.com/drive/folders/1rzmLET68QOWb4At4mAyN4rDsj-VGBLyh?usp=sharing).
+> Documentation for the **Serial CAN Bus** can be found [here](https://drive.google.com/drive/folders/1rzmLET68QOWb4At4mAyN4rDsj-VGBLyh?usp=sharing).
 
 
 ## Todo
