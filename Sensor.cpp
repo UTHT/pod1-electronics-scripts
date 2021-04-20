@@ -28,32 +28,51 @@ Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta){
     lastread = millis();    //Buffer - Resets the last read time to the current time
 }
 
-bool Sensor::begin(){
+SensorState* Sensor::begin(){
     if(init()){
-        state.debug = INIT;
+        state.debug = DS_INIT;
     } else {
-        state.debug = DISABLED;
-        state.error = FAIL;
+        state.debug = DS_DISABLED;
+        state.error = ERR_FAIL;
     }
+    return &state;
 }
 
 /**
  * Wrapper for hardware-level read function. Updates the state.
  * Checks that enough time has passed between reads.
  **/
-void Sensor::update(){
+SensorState* Sensor::update(){
     // Check preconditions
-    if(state.error < FAIL && state.debug >= INIT){
+    if(state.error < ERR_FAIL && state.debug >= DS_INIT){
         // Check timing
         if(millis()-lastread > delta){
-            read();
-            //Reset the last read time to now
-            lastread = millis();
-            // Did read() generate an error?
-            state.debug = NEWREAD;
-            state.age = 0;      //Approximately
+            // Create buffer
+            t_datum* buffer = (t_datum*)malloc(sizeof(t_datum)*setup.numdata);
+            for(int i = 0; i < setup.numdata; i++){
+                buffer[i].units = state.data[i].units;
+            }
+
+            state.error = read(&buffer, state.numdata);
+            lastread = millis();    //Reset the last read attempt time to now
+
+            switch(state.error){
+                case ERR_NONE:  //Success!
+                    state.debug = DS_NEWREAD;
+                    state.timestamp = lastread;
+                    memcpy(state.data, buffer, state.numdata*sizeof(t_datum));
+                    free(buffer);
+                    break;
+                case ERR_WARN:  //Read didn't go as planned, non-fatal
+                    // DO NOT UPDATE STATE VALUES
+                    break;
+                case ERR_FAIL:  //Read failed catastrophically
+                    state.debug = DS_DISABLED;
+                    break;
+            }
+        } else {
+            state.debug = DS_WAITING;
         }
-        state.debug = WAITING;
-        state.age = millis()-lastread;
     }
+    return &state;
 }

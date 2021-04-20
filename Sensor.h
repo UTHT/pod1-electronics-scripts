@@ -2,18 +2,19 @@
 #define Sensor_H
 
 #include "Arduino.h"
+#include "stdlib.h"
 
 // Sensor identifiers
 enum sensor_t {
-  OPT2002,
-  VN200,
-  PROSENSERTD,
-  TMP006,
-  MPU9250,
-  DCT500,
-  SPTD25_20_1000H,
-  SPTD25_20_0200A,
-  CANBUS
+  S_OPT2002,
+  S_VN200,
+  S_PROSENSERTD,
+  S_TMP006,
+  S_MPU9250,
+  S_DCT500,
+  S_SPTD25_20_1000H,
+  S_SPTD25_20_0200A,
+  S_CANBUS
 };
 
 // Arduino identifiers
@@ -26,19 +27,19 @@ enum arduino_t {
 // Degree of error occurred
 // TODO: Maybe add more specific codes? (i.e. hardware/wiring fail, comms/protocol fail, etc.)
 enum errorlevel_t {
-  NONE,
-  WARN,
-  FAIL  //NOTE: Implies debug level 'DISABLED'
+  ERR_NONE,
+  ERR_WARN,
+  ERR_FAIL  //NOTE: Implies debug level 'DISABLED'
 };
 
 // General state - On fail != 0, what state did it last complete successfully?
 enum debuglevel_t {
   //NOTE: The various debug states imply the value of cache.state.data as follows:
-  DISABLED,     //NULL
-  INIT,         //NULL
-  // CALIBRATING,  //NULL if first time, otherwise unknown
-  WAITING,      //NOT NULL, age > 0
-  NEWREAD          //NOT NULL, age == 0
+  DS_DISABLED,     //NULL
+  DS_INIT,         //NULL
+  // DS_CALIBRATING,  //NULL if first time, otherwise unknown
+  DS_WAITING,      //NOT NULL, age > 0
+  DS_NEWREAD          //NOT NULL, age == 0
 };
 
 // Unimplemented for now...
@@ -64,7 +65,7 @@ typedef struct t_datum {
 typedef struct SensorState {
   errorlevel_t error,
   debuglevel_t debug,
-  uint16_t age,       //How many milliseconds ago was this sensor data updated?
+  uint16_t timestamp; //Last data update (millis since start)
   t_datum* data,      //Array of datum
   uint8_t numdata
 } SensorState;
@@ -85,19 +86,20 @@ struct t_datasetup {
 class Sensor{
   private:
     uint16_t delta;         //The minimum time (milliseconds) between sensor updates.
-    uint16_t lastread;      //The last time the sensor was read, milliseconds since program start.
+    uint16_t lastread;      //Timestamp of last read ATTEMPT
   protected:
     // Sensor-specific functionality initialize and read functions - to be implemented by sensor classes
-    virtual bool init() = 0;  //Connect to sensor, calibrate, set data count and units, and update state accordingly
-    virtual void read() = 0;  //Get ALL data from the sensor hardware, update state (incl. data)
+    virtual errorlevel_t init() = 0;                                  //Connect to sensor, calibrate, set data count and units, and update state accordingly
+    virtual errorlevel_t read(t_datum** data, uint8_t numdata) = 0;   //Get ALL data from the sensor hardware -> *data[i in numdata]
 
     // State and IDs
     SensorState state;   //Stores all the latest state data for this sensor.
     arduino_t arduino;
     sensor_t sensor;
   public:
-    void update();  //Calls read(), manages delta, and wraps all t_datum
-    void begin();   //Sets state in accordance with init()
+    // Wrappers return pointer to updated state
+    SensorState* update();  //Calls read(), manages delta, and wraps all t_datum
+    SensorState* begin();   //Sets state in accordance with init()
     Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta);
 };
 
