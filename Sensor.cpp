@@ -29,11 +29,11 @@ Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta){
 }
 
 SensorState* Sensor::begin(){
-    if(init()){
-        state.debug = DS_INIT;
-    } else {
+    state.error = init();
+    if(state.error > ERR_NONE){
         state.debug = DS_DISABLED;
-        state.error = ERR_FAIL;
+    } else {
+        state.debug = DS_INIT;
     }
     return &state;
 }
