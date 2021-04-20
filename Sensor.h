@@ -57,7 +57,7 @@ enum debuglevel_t {
 // Single datapoint
 typedef struct t_datum {
   float data,
-  char[3] units
+  const char* units
 } t_datum;
 
 // All sensor state info + latest datum - used as the "cache" in the sensor object
@@ -90,7 +90,7 @@ class Sensor{
   protected:
     // Sensor-specific functionality initialize and read functions - to be implemented by sensor classes
     virtual errorlevel_t init() = 0;                                  //Connect to sensor, calibrate, set data count and units, and update state accordingly
-    virtual errorlevel_t read(t_datum** data, uint8_t numdata) = 0;   //Get ALL data from the sensor hardware -> *data[i in numdata]
+    virtual errorlevel_t read(t_datum* data, uint8_t numdata) = 0;    //Get ALL data from the sensor hardware -> data[i in numdata]
 
     // State and IDs
     SensorState state;   //Stores all the latest state data for this sensor.

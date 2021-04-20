@@ -53,7 +53,7 @@ SensorState* Sensor::update(){
                 buffer[i].units = state.data[i].units;
             }
 
-            state.error = read(&buffer, state.numdata);
+            state.error = read(buffer, state.numdata);
             lastread = millis();    //Reset the last read attempt time to now
 
             switch(state.error){
