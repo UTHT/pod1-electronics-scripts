@@ -56,30 +56,30 @@ enum debuglevel_t {
 
 // Single datapoint
 typedef struct t_datum {
-  float data,
-  const char* units
+  float data;
+  const char* units;
 } t_datum;
 
 // All sensor state info + latest datum - used as the "cache" in the sensor object
 // TODO: Replace state enums with state structs containing messages, etc.
 typedef struct SensorState {
-  errorlevel_t error,
-  debuglevel_t debug,
+  errorlevel_t error;
+  debuglevel_t debug;
   uint16_t timestamp; //Last data update (millis since start)
-  t_datum* data,      //Array of datum
-  uint8_t numdata
+  t_datum* data;      //Array of datum
+  uint8_t numdata;
 } SensorState;
 
 // Wrapper for all sensor stuff - this is what gets passed to the main computer
 typedef struct SensorData {
-  sensor_t sensor,
-  arduino_t arduino,
-  SensorState state
+  sensor_t sensor;
+  arduino_t arduino;
+  SensorState state;
 } SensorData;
 
 struct t_datasetup {
-  uint8_t numdata,
-  (const char*)* units
+  uint8_t numdata;
+  (const char*)* units;
 };
 
 // Sensor class - note the difference in exposure and implementation in read/init and getRead/begin
