@@ -94,9 +94,9 @@ class Sensor{
 
     // State and IDs
     SensorState state;   //Stores all the latest state data for this sensor.
+  public:
     arduino_t arduino;
     sensor_t sensor;
-  public:
     // Wrappers return pointer to updated state
     SensorState* update();  //Calls read(), manages delta, and wraps all t_datum
     SensorState* begin();   //Sets state in accordance with init()
