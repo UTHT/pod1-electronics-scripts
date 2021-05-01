@@ -10,7 +10,7 @@ MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
 // Vibration analysis
 #include "arduinoFFT.h"
 #define ENABLE_FFT true     // Set to true for FFT calculations
-#define FFT_AXIS 0          // Axis setting: 0=x, 1=y, 2=z;
+#define FFT_AXIS 'z'          // Axis setting: 0=x, 1=y, 2=z;
 #define SAMPLES 256 // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 arduinoFFT FFT = arduinoFFT();
@@ -77,16 +77,29 @@ void loop()
     // Collecting data for fourier transform
     // Configured for x-axis (Due only has enough memeory for one axis).
     // For other axes, set FFT_AXIS to 1 for y-axis, to 2 for z-axis
-    if     (FFT_AXIS == 0) vReal[count] = (double) mpu9250.ax;
-    else if(FFT_AXIS == 1) vReal[count] = (double) mpu9250.ay;
-    else                   vReal[count] = (double) mpu9250.az;
+    switch(FFT_AXIS)
+    {
+      case 'x':
+        vReal[count] = (double) mpu9250.ax;
+        break;
+      case 'y':
+        vReal[count] = (double) mpu9250.ay;
+        break;
+      case 'z':
+        vReal[count] = (double) mpu9250.az;
+        break;
+    }
+    
+//    if     (FFT_AXIS == 0) vReal[count] = (double) mpu9250.ax;
+//    else if(FFT_AXIS == 1) vReal[count] = (double) mpu9250.ay;
+//    else                   vReal[count] = (double) mpu9250.az;
     count++;
     if(count > SAMPLES)
     {
       peak = computeFFT(vReal);
       count = 0;
     }
-  }
+  } //ENABLE_FFT
 }
 
 // ========================================================================================================
@@ -174,9 +187,21 @@ void printData() {
   if(ENABLE_FFT)
   {
     // Arduino Due only has enough memory to process enough data for one axis of Fast Fourier Transform
-    if     (FFT_AXIS == 0) Serial.print("X-Axis ");
-    else if(FFT_AXIS == 1) Serial.print("Y-Axis ");
-    else                   Serial.print("Z-Axis ");
+    switch(FFT_AXIS)
+    {
+      case 'x':
+        Serial.print("X-Axis ");
+        break;
+      case 'y':
+        Serial.print("Y-Axis ");
+        break;
+      case 'z':
+        Serial.print("Z-Axis ");
+        break;
+    }
+//    if     (FFT_AXIS == 0) Serial.print("X-Axis ");
+//    else if(FFT_AXIS == 1) Serial.print("Y-Axis ");
+//    else                   Serial.print("Z-Axis ");
     Serial.print("vibration frequency: "); Serial.print(peak);
     Serial.println(" mg/Hz");
   }
