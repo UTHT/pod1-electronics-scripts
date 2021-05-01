@@ -9,13 +9,15 @@ MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
 
 // Vibration analysis
 #include "arduinoFFT.h"
+#define ENABLE_FFT true     // Set to true for FFT calculations
+#define FFT_AXIS 0          // Axis setting: 0=x, 1=y, 2=z;
 #define SAMPLES 256 // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 arduinoFFT FFT = arduinoFFT();
-double vRealx[SAMPLES], vRealy[SAMPLES], vRealz[SAMPLES];
+double vReal[SAMPLES];
 double vImag[SAMPLES];
 int count = 0;
-double peakx = 0, peaky = 0, peakz = 0;
+double peak = 0.0;
 double vibrationFreq;
 
 
@@ -138,7 +140,20 @@ void setup()
     Serial.println("Data start!");
     Serial.println("Data start!");
 
-    delay(2000); // Add delay to see results before serial spew of data
+  if(ENABLE_FFT)
+  {
+    // Collecting data for fourier transform
+    // Configured for x-axis (Due only has enough memeory for one axis).
+    // For other axes, set FFT_AXIS to 1 for y-axis, to 2 for z-axis
+    if     (FFT_AXIS == 0) vReal[count] = (double) mpu9250.ax;
+    else if(FFT_AXIS == 1) vReal[count] = (double) mpu9250.ay;
+    else                   vReal[count] = (double) mpu9250.az;
+    count++;
+    if(count > SAMPLES)
+    {
+      peak = computeFFT(vReal);
+      count = 0;
+    }
   }
 }
 
@@ -179,20 +194,51 @@ void loop()
   // Must be called before updating quaternions!
 //  mpu9250.updateTime();
 
-  // Sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of
-  // the magnetometer; the magnetometer z-axis (+ down) is opposite to z-axis
-  // (+ up) of accelerometer and gyro! We have to make some allowance for this
-  // orientation mismatch in feeding the output to the quaternion filter. For the
-  // MPU-9250, we have chosen a magnetic rotation that keeps the sensor forward
-  // along the x-axis just like in the LSM9DS0 sensor. This rotation can be
-  // modified to allow any convenient orientation convention. 
-  
-  //!! This is ok by aircraft orientation standards! 
-  
-  //Pass gyro rate as rad/s
-//  MahonyQuaternionUpdate(mpu9250.ax, mpu9250.ay, mpu9250.az, mpu9250.gx * DEG_TO_RAD,
-//                         mpu9250.gy * DEG_TO_RAD, mpu9250.gz * DEG_TO_RAD, mpu9250.my,
-//                         mpu9250.mx, mpu9250.mz, mpu9250.deltat);
+/*
+ * Name: printData
+ * Function: Displays the calculated data for accel, gyro, mag, sensor temp, and vib frequency
+ */
+void printData() {
+  // Print acceleration values in milligs
+  Serial.print("X-acceleration: "); Serial.print(1000 * mpu9250.ax);
+  Serial.print(" mg          ");
+  Serial.print("Y-acceleration: "); Serial.print(1000 * mpu9250.ay);
+  Serial.print(" mg          ");
+  Serial.print("Z-acceleration: "); Serial.print(1000 * mpu9250.az);
+  Serial.println(" mg ");
+
+  // Print gyro values in degree/sec
+  Serial.print("X-gyro rate: "); Serial.print(mpu9250.gx, 3);
+  Serial.print(" degrees/sec    ");
+  Serial.print("Y-gyro rate: "); Serial.print(mpu9250.gy, 3);
+  Serial.print(" degrees/sec    ");
+  Serial.print("Z-gyro rate: "); Serial.print(mpu9250.gz, 3);
+  Serial.println(" degrees/sec");
+
+  // Print mag values in milligauss/sec     [Currently Unused]
+  Serial.print("X-mag field: "); Serial.print(mpu9250.mx);
+  Serial.print(" mG              ");
+  Serial.print("Y-mag field: "); Serial.print(mpu9250.my);
+  Serial.print(" mG              ");
+  Serial.print("Z-mag field: "); Serial.print(mpu9250.mz);
+  Serial.println(" mG");
+
+  mpu9250.tempCount = mpu9250.readTempData(); // Read the adc values
+  mpu9250.temperature = ((float) mpu9250.tempCount) / 333.87 + 21.0; // Temperature in degrees Centigrade
+  Serial.print("Temperature: ");  Serial.print(mpu9250.temperature, 1);
+  Serial.println(" degrees C");
+
+  if(ENABLE_FFT)
+  {
+    // Arduino Due only has enough memory to process enough data for one axis of Fast Fourier Transform
+    if     (FFT_AXIS == 0) Serial.print("X-Axis ");
+    else if(FFT_AXIS == 1) Serial.print("Y-Axis ");
+    else                   Serial.print("Z-Axis ");
+    Serial.print("vibration frequency: "); Serial.print(peak);
+    Serial.println(" mg/Hz");
+  }
+  Serial.println();
+}
 
   if (!AHRS)
   {
