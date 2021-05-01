@@ -10,8 +10,8 @@ MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
 // Vibration analysis
 #include "arduinoFFT.h"
 #define ENABLE_FFT true     // Set to true for FFT calculations
-#define FFT_AXIS 'z'          // Axis setting: 0=x, 1=y, 2=z;
-#define SAMPLES 256 // Must be a power of 2
+#define FFT_AXIS 'z'        // Can set FFT_AXIZ to 'x', 'y', or 'z'
+#define SAMPLES 256         // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 arduinoFFT FFT = arduinoFFT();
 double vReal[SAMPLES];
@@ -75,8 +75,8 @@ void loop()
   if(ENABLE_FFT)
   {
     // Collecting data for fourier transform
-    // Configured for x-axis (Due only has enough memeory for one axis).
-    // For other axes, set FFT_AXIS to 1 for y-axis, to 2 for z-axis
+    // Can only be configured for one axis only, due to memory constraint
+    // For other axes, set FFT_AXIS 'x', 'y', 'z'
     switch(FFT_AXIS)
     {
       case 'x':
