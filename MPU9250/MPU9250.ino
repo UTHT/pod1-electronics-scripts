@@ -9,13 +9,15 @@ MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
 
 // Vibration analysis
 #include "arduinoFFT.h"
+#define ENABLE_FFT true     // Set to true for FFT calculations
+#define FFT_AXIS 0          // Axis setting: 0=x, 1=y, 2=z;
 #define SAMPLES 256 // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 arduinoFFT FFT = arduinoFFT();
-double vRealx[SAMPLES], vRealy[SAMPLES], vRealz[SAMPLES];
+double vReal[SAMPLES];
 double vImag[SAMPLES];
 int count = 0;
-double peakx = 0, peaky = 0, peakz = 0;
+double peak = 0.0;
 double vibrationFreq;
 
 
@@ -70,15 +72,20 @@ void loop()
     mpu9250.count = millis();
   }
 
-  // Collecting data for fourier transform
-  // Configured for x-axis (Due only has enough memeory for one axis).
-  // For other axes, use mpu9250.ay/az, vRealy[]/vRealz[], and peaky/peakz
-  vRealx[count] = (double) mpu9250.ax;
-  count++;
-  if(count > SAMPLES)
+  if(ENABLE_FFT)
   {
-    peakx = computeFFT(vRealx);
-    count = 0;
+    // Collecting data for fourier transform
+    // Configured for x-axis (Due only has enough memeory for one axis).
+    // For other axes, set FFT_AXIS to 1 for y-axis, to 2 for z-axis
+    if     (FFT_AXIS == 0) vReal[count] = (double) mpu9250.ax;
+    else if(FFT_AXIS == 1) vReal[count] = (double) mpu9250.ay;
+    else                   vReal[count] = (double) mpu9250.az;
+    count++;
+    if(count > SAMPLES)
+    {
+      peak = computeFFT(vReal);
+      count = 0;
+    }
   }
 }
 
@@ -164,10 +171,15 @@ void printData() {
   Serial.print("Temperature: ");  Serial.print(mpu9250.temperature, 1);
   Serial.println(" degrees C");
 
-  // Arduino Due only has enough memory to process enough data for one axis of Fast Fourier Transform
-  Serial.print("X-vib freq: "); Serial.print(peakx);
-  Serial.println(" mg/Hz");
-
+  if(ENABLE_FFT)
+  {
+    // Arduino Due only has enough memory to process enough data for one axis of Fast Fourier Transform
+    if     (FFT_AXIS == 0) Serial.print("X-Axis ");
+    else if(FFT_AXIS == 1) Serial.print("Y-Axis ");
+    else                   Serial.print("Z-Axis ");
+    Serial.print("vibration frequency: "); Serial.print(peak);
+    Serial.println(" mg/Hz");
+  }
   Serial.println();
 }
 
