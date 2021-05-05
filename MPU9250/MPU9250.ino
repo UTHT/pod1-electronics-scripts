@@ -10,7 +10,7 @@ MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
 // Vibration analysis
 #include "arduinoFFT.h"
 #define ENABLE_FFT true     // Set to true for FFT calculations
-#define FFT_AXIS 'z'        // Can set FFT_AXIZ to 'x', 'y', or 'z'
+#define FFT_AXIS 'x'        // Can set FFT_AXIZ to 'x', 'y', or 'z'
 #define SAMPLES 256         // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 arduinoFFT FFT = arduinoFFT();
@@ -158,16 +158,14 @@ void setup()
         break;
     }
     
-//    if     (FFT_AXIS == 0) vReal[count] = (double) mpu9250.ax;
-//    else if(FFT_AXIS == 1) vReal[count] = (double) mpu9250.ay;
-//    else                   vReal[count] = (double) mpu9250.az;
     count++;
-    if(count > SAMPLES)
+    if(count-1 > SAMPLES)
     {
       peak = computeFFT(vReal);
       count = 0;
     }
   } //ENABLE_FFT
+  
 }
 
 void loop()
@@ -256,9 +254,6 @@ void printData() {
         Serial.print("Z-Axis ");
         break;
     }
-//    if     (FFT_AXIS == 0) Serial.print("X-Axis ");
-//    else if(FFT_AXIS == 1) Serial.print("Y-Axis ");
-//    else                   Serial.print("Z-Axis ");
     Serial.print("vibration frequency: "); Serial.print(peak);
     Serial.println(" mg/Hz");
   }
