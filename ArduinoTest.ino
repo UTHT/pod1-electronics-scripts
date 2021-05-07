@@ -3,7 +3,7 @@
 
 #define NUM_SENSORS 1
 
-SPTD25_20_1000H sptd25_20_1000h(A0);
+SPTD25_20_1000H sptd25_20_1000h(A0, ARDUINO_ONE);
 
 Sensor* sensors[NUM_SENSORS] = {
     &sptd25_20_1000h
@@ -12,8 +12,8 @@ Sensor* sensors[NUM_SENSORS] = {
 void setup(){
     Serial.begin(115200);
     for(int i = 0; i < NUM_SENSORS; i++){
-        SensorState state = sensors[i]->begin();
-        if(state.debug != INIT){
+        SensorState* state = sensors[i]->begin();
+        if(state->debug != DS_INIT){
             Serial.print("Failed to initialize sensor - ID: ");
             Serial.println(sensors[i]->sensor);
         } else {
@@ -26,13 +26,13 @@ void setup(){
 
 void loop(){
     for(int i = 0; i < NUM_SENSORS; i++){
-        SensorState state = sensors[i]->update();
-        if(state.debug == DS_NEWREAD){
+        SensorState* state = sensors[i]->update();
+        if(state->debug == DS_NEWREAD){
             Serial.print("Data from sensor ID: ");
             Serial.print(sensors[i]->sensor);
             Serial.print(": ");
-            printData(state.data, state.numdata);
-        } else if(state.debug != DS_WAITING) {
+            printData(state->data, state->numdata);
+        } else if(state->debug != DS_WAITING) {
             Serial.print("Sensor ID: ");
             Serial.print(sensors[i]->sensor);
             Serial.println(" failed! Disabling.")

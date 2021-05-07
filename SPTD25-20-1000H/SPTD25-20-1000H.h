@@ -5,7 +5,7 @@
 
 class SPTD25_20_1000H : public Sensor {
     public:
-        SPTD25_20_1000H(uint8_t pin);
+        SPTD25_20_1000H(uint8_t pin, arduino_t arduino);
     private:
         errorlevel_t read(t_datum* data, uint8_t numdata) override;
         errorlevel_t init() override;
