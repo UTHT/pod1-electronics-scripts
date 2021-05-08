@@ -2,18 +2,18 @@
 
 ## Sensor Information
 
-### Sensor Output (TODO: add return value ranges)
-- Acceleration (x,y,z) [milli-g]
-- Gyro values (x,y,z) [deg/sec]
-- Mag field values (x,y,z) [milliGauss/sec]
-- Sensor temperature [Celsius]
-- Vibration frequency of selected axis [mg/Hz]
+### Sensor Output
+- Acceleration (x,y,z) [milli-g], range: +-2000[mg] (default, configurable to upto +-16000[mg])
+- Gyro values (x,y,z) [deg/sec], range: +-250[deg/s] (default, configurable to upto +-2000[deg/sec])
+- Magnetic values (x,y,z) [milliGauss], range: +-48000[mG]
+- Sensor temperature [Celsius], range: -40[C] to 85[C]
+- Vibration frequency of selected axis [mg/Hz], range: unspecified in ArduinoFFT documentation
 
 ### Sensor Use
 Sensor is intended to be used in auxiliary, obtained data for pod improvement.
 - Acceleration data measures relative location. Values also used for vibration analysis.
-- Gyroscope data measures orientation
-- Magnetic field data *currently unused*
+- Gyroscope data measures rotation
+- Magnetometer data measures orientation relative to magnetic north (*currently unused*)
 - Sensor temperature monitors sensor health
 - Vibration frequency measures the dominant vibrations experienced by the pod, data can be used to mitigate vibrations to improve the accuracy of the main IMU "Vector Nav VN200"
 
