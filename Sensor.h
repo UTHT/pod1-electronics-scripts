@@ -5,7 +5,7 @@
 #include "stdlib.h"
 
 // Sensor identifiers
-enum sensor_t {
+typedef enum {
   S_OPT2002,
   S_VN200,
   S_PROSENSERTD,
@@ -15,32 +15,32 @@ enum sensor_t {
   S_SPTD25_20_1000H,
   S_SPTD25_20_0200A,
   S_CANBUS
-};
+} sensor_t;
 
 // Arduino identifiers
-enum arduino_t {
+typedef enum {
   ARDUINO_ONE,
   ARDUINO_TWO,
   ARDUINO_THREE
-};
+} arduino_t;
 
 // Degree of error occurred
 // TODO: Maybe add more specific codes? (i.e. hardware/wiring fail, comms/protocol fail, etc.)
-enum errorlevel_t {
+typedef enum {
   ERR_NONE,
   ERR_WARN,
   ERR_FAIL  //NOTE: Implies debug level 'DISABLED'
-};
+} errorlevel_t;
 
 // General state - On fail != 0, what state did it last complete successfully?
-enum debuglevel_t {
+typedef enum {
   //NOTE: The various debug states imply the value of cache.state.data as follows:
   DS_DISABLED,     //NULL
   DS_INIT,         //NULL
   // DS_CALIBRATING,  //NULL if first time, otherwise unknown
   DS_WAITING,      //NOT NULL, age > 0
   DS_NEWREAD          //NOT NULL, age == 0
-};
+} debuglevel_t;
 
 // Unimplemented for now...
 // typedef struct SensorError {

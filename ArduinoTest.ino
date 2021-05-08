@@ -19,7 +19,7 @@ void setup(){
         } else {
             Serial.print("Sensor ID: ");
             Serial.print(sensors[i]->sensor);
-            Serial.println(" initialized successfully!")
+            Serial.println(" initialized successfully!");
         }
     }
 }
@@ -35,7 +35,7 @@ void loop(){
         } else if(state->debug != DS_WAITING) {
             Serial.print("Sensor ID: ");
             Serial.print(sensors[i]->sensor);
-            Serial.println(" failed! Disabling.")
+            Serial.println(" failed! Disabling.");
         }
     }
 }
@@ -44,7 +44,7 @@ void printData(t_datum* data, uint8_t numdata){
     for(int i = 0; i < numdata-1; i++){
         Serial.print(data[i].data, 3);
         Serial.print(data[i].units);
-        Serial.print(", ")
+        Serial.print(", ");
     }
     Serial.print(data[numdata-1].data, 3);
     Serial.println(data[numdata-1].units);
