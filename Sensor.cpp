@@ -6,18 +6,19 @@
  * Constructor. 
  * @param sensor - sensor_t - Which sensor is this?
  * @param arduino - arduino_t - Which Arduino are we attached to?
- * @param delta - uint16_t - The minimum time (in ms) between sensor reads.
+ * @param setup - t_datasetup - How many datasets are there? What are their units?
+ * @param delta - uint16_t - The minimum time (in ms) between sensor read attempts.
  **/
-Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta){
+Sensor::Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta){
     // Set up cache
     this->sensor = sensor;
     this->arduino = arduino;
-    state.error = NONE;
-    state.debug = DISABLED;
-    state.age = 0;
+    state.error = ERR_NONE;
+    state.debug = DS_DISABLED;
+    state.timestamp = millis();
 
     // Allocate data locations
-    state.data = (t_datum*)malloc(sizeof(t_datum)*setup.numdata);
+    state.data = (t_datum*)malloc(sizeof(t_datum)*(setup.numdata));
     state.numdata = setup.numdata;
     for(int i = 0; i < setup.numdata; i++){
         // Since setup.units[i] is a const char*, we can just reassign our pointer
@@ -48,8 +49,8 @@ SensorState* Sensor::update(){
         // Check timing
         if(millis()-lastread > delta){
             // Create buffer
-            t_datum* buffer = (t_datum*)malloc(sizeof(t_datum)*setup.numdata);
-            for(int i = 0; i < setup.numdata; i++){
+            t_datum* buffer = (t_datum*)malloc(sizeof(t_datum)*state.numdata);
+            for(int i = 0; i < state.numdata; i++){
                 buffer[i].units = state.data[i].units;
             }
 
@@ -60,8 +61,8 @@ SensorState* Sensor::update(){
                 case ERR_NONE:  //Success!
                     state.debug = DS_NEWREAD;
                     state.timestamp = lastread;
-                    memcpy(state.data, buffer, state.numdata*sizeof(t_datum));
-                    free(buffer);
+                    free(state.data);
+                    state.data = buffer;
                     break;
                 case ERR_WARN:  //Read didn't go as planned, non-fatal
                     // DO NOT UPDATE STATE VALUES
