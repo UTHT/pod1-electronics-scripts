@@ -18,7 +18,7 @@ errorlevel_t OPT2002::init(){
 // Currently sensorValue at 0 psi is 176 - 177
 errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 1){
+    if(numdata != 1){ //TODO: globally declare the array size instead of using the int value
       return ERR_FAIL;
     }
     //turn on the sensors
