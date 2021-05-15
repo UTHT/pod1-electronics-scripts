@@ -12,11 +12,10 @@ errorlevel_t DCT500::init(){
     return ERR_NONE;
 }
 
-// TODO Calibrate from 0 psi to 200 psi
-// Currently sensorValue at 0 psi is 176 - 177
+// TODO Calibrate from 0 A to 500 A
 errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 1){
+    if(numdata != 1){//TODO: globally declare the array size instead of using the int value
       return ERR_FAIL;
     }
     double current = analogRead(pin)*5/1023.0/100;
