@@ -18,6 +18,7 @@ errorlevel_t MPU9250::init(){
         return ERR_FAIL;
     } else {
         // Self test and calibration
+        // todo calibration check before the pod runs
         
         mpu9250.MPU9250SelfTest(mpu9250.selfTest);
 
@@ -41,11 +42,10 @@ errorlevel_t MPU9250::init(){
     }
 }
 
-// TODO Calibrate from 0 psi to 200 psi
-// Currently sensorValue at 0 psi is 176 - 177
+// TODO Calibrate imu readings
 errorlevel_t MPU9250::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 1){
+    if(numdata != 9){ //TODO: globally declare the array size instead of using the int value
       return ERR_FAIL;
     }
     // Check if data ready
