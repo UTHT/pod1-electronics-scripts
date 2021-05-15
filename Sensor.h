@@ -77,10 +77,10 @@ typedef struct SensorData {
   SensorState state;
 } SensorData;
 
-struct t_datasetup {
+typedef struct t_datasetup {
   uint8_t numdata;
   const char** units;
-};
+} t_datasetup;
 
 // Sensor class - note the difference in exposure and implementation in read/init and getRead/begin
 class Sensor{

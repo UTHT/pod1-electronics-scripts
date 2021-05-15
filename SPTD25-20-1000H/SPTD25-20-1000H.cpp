@@ -1,6 +1,7 @@
 #include "SPTD25-20-1000H.h"
 
-struct t_datasetup datasetup = {2, {"kPa", "kPa (Mapped)"}};
+const char* arr[2] = {"kPa (Raw)", "kPa"};
+t_datasetup datasetup = {2, arr};
 
 SPTD25_20_1000H::SPTD25_20_1000H(uint8_t pin, arduino_t arduino) : Sensor(S_SPTD25_20_1000H, arduino, datasetup, 250){
     this->pin = pin;
@@ -8,7 +9,7 @@ SPTD25_20_1000H::SPTD25_20_1000H(uint8_t pin, arduino_t arduino) : Sensor(S_SPTD
 
 errorlevel_t SPTD25_20_1000H::init(){
     pinMode(pin, INPUT);
-    return true;
+    return ERR_NONE;
 }
 
 // TODO Calibrate from 0 psi to 200 psi
