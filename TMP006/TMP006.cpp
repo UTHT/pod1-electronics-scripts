@@ -8,14 +8,14 @@ TMP006::TMP006(uint8_t addr, arduino_t arduino) : Sensor(S_TMP006, arduino, data
 }
 
 errorlevel_t TMP006::init(){
+    //TODO is tmp006.wake(); required after tmp006.begin() to turn on the tmp006
     return (tmp006.begin(TMP006_CFG_4SAMPLE) ? ERR_NONE : ERR_FAIL);
 }
 
-// TODO Calibrate from 0 psi to 200 psi
-// Currently sensorValue at 0 psi is 176 - 177
+// TODO Calibrate temperature readings
 errorlevel_t TMP006::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 1){
+    if(numdata != 2){ //TODO: globally declare the array size instead of using the int value
       return ERR_FAIL;
     }
 
