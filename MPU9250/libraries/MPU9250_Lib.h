@@ -5,8 +5,8 @@
  library in the Wire.h/twi.c utility file. We are also using the 400 kHz fast
  I2C mode by setting the TWI_FREQ  to 400000L /twi.h utility file.
  */
-#ifndef _MPU9250_H_
-#define _MPU9250_H_
+#ifndef _MPU9250_LIB_H_
+#define _MPU9250_LIB_H_
 
 #include <SPI.h>
 #include <Wire.h>
@@ -182,7 +182,7 @@
 #define SPI_DATA_RATE 1000000 // 1MHz is the max speed of the MPU-9250
 #define SPI_MODE SPI_MODE3
 
-class MPU9250
+class MPU9250_Lib
 {
   protected:
 
@@ -280,8 +280,8 @@ public:
     int16_t accelCount[3];
 
     // Public method declarations
-    MPU9250( int8_t csPin, SPIClass &spiInterface = SPI, uint32_t spi_freq = SPI_DATA_RATE);
-    MPU9250( uint8_t address = MPU9250_ADDRESS_AD0, TwoWire &wirePort = Wire, uint32_t clock_frequency = 100000 );
+    MPU9250_Lib( int8_t csPin, SPIClass &spiInterface = SPI, uint32_t spi_freq = SPI_DATA_RATE);
+    MPU9250_Lib( uint8_t address = MPU9250_ADDRESS_AD0, TwoWire &wirePort = Wire, uint32_t clock_frequency = 100000 );
     void getMres();
     void getGres();
     void getAres();
