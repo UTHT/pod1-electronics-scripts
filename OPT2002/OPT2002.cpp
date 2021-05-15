@@ -14,8 +14,7 @@ errorlevel_t OPT2002::init(){
     return ERR_NONE;
 }
 
-// TODO Calibrate from 0 psi to 200 psi
-// Currently sensorValue at 0 psi is 176 - 177
+// TODO Calibrate distance reading
 errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
     if(numdata != 1){ //TODO: globally declare the array size instead of using the int value
