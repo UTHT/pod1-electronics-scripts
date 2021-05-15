@@ -1,14 +1,16 @@
 #include "OPT2002.h"
 
-const char* arr[2] = {"kPa (Raw)", "kPa"};
-t_datasetup datasetup = {2, arr};
+const char* arr[1] = {"mm"};
+t_datasetup datasetup = {1, arr};
 
-OPT2002::OPT2002(uint8_t pin, arduino_t arduino) : Sensor(S_OP, arduino, datasetup, 250){
-    this->pin = pin;
+OPT2002::OPT2002(uint8_t inpin, uint8_t errpin, arduino_t arduino) : Sensor(S_OPT2002, arduino, datasetup, 250){
+    this->inpin = inpin;
+    this->errpin = errpin;
 }
 
 errorlevel_t OPT2002::init(){
-    pinMode(pin, INPUT);
+    pinMode(inpin, INPUT);
+    pinMode(errpin, INPUT);
     return ERR_NONE;
 }
 
@@ -16,16 +18,22 @@ errorlevel_t OPT2002::init(){
 // Currently sensorValue at 0 psi is 176 - 177
 errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 2){
+    if(numdata != 1){
       return ERR_FAIL;
     }
-    int val = analogRead(pin);
-    data[0].data = (float)val;
-    data[1].data = (float)sptd25_map(val, 176.0, 1023.0, 0, 200.0);
+    //turn on the sensors
+    digitalWrite(errpin,LOW);
+    digitalWrite(errpin,HIGH);
+
+    // TODO: Figure out the error checking
+    // String error = String(digitalRead(errpin));
+    // if(error.length() > 0){
+    //     return ERR_WARN;
+    // }
+    
+    double distance = 30 + 5 * (analogRead(inpin) * 3.3 * 2);	
+
+    data[0].data = (float)distance;
     // TODO: other error conditions?
     return ERR_NONE;
-}
-
-double spt25_map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
