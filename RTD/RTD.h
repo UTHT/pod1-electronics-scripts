@@ -9,10 +9,10 @@ class RTD : public Sensor {
     private:
         errorlevel_t read(t_datum* data, uint8_t numdata) override;
         errorlevel_t init() override;
-        // /**
-        //  * Analog input pin.
-        //  * */
-        // uint8_t pin;
+        /**
+         * Analog input pin.
+         * */
+        uint8_t pin;
 };
 
 #endif
