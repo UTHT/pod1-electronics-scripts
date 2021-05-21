@@ -3,8 +3,7 @@
 const char* arr[9] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]"};
 t_datasetup datasetup = {9, arr};
 
-MPU9250::MPU9250(uint8_t pin, arduino_t arduino) : Sensor(S_MPU9250, arduino, datasetup, 250){
-    this->pin = pin;
+MPU9250::MPU9250(arduino_t arduino) : Sensor(S_MPU9250, arduino, datasetup, 250){
 }
 
 errorlevel_t MPU9250::init(){

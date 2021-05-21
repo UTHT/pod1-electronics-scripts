@@ -26,9 +26,9 @@ double vibrationFreq;
 
 class MPU9250 : public Sensor {
     public:
-        MPU9250(uint8_t pin, arduino_t arduino);
+        MPU9250(arduino_t arduino);
     private:
-        MPU9250 mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
+        MPU9250_Lib mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
         errorlevel_t read(t_datum* data, uint8_t numdata) override;
         errorlevel_t init() override;
         /**
