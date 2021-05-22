@@ -1,7 +1,7 @@
 #ifndef SPT25_20_0200A_H
 #define SPT25_20_0200A_H
 
-#include "../Sensor.h"
+#include "Sensor.h"
 
 class SPT25_20_0200A : public Sensor {
     public:
