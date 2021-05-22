@@ -12,6 +12,10 @@ errorlevel_t RTD::init(){
     return ERR_NONE;
 }
 
+double prosense_rtd_map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 // TODO Calibrate temperature readings
 errorlevel_t RTD::read(t_datum* data, uint8_t numdata){
     // NOTE: Convention - check that numdata given matches expected
@@ -23,8 +27,4 @@ errorlevel_t RTD::read(t_datum* data, uint8_t numdata){
     data[1].data = (float)prosense_rtd_map(val, 180, 901, -40, 300);
     // TODO: other error conditions?
     return ERR_NONE;
-}
-
-double prosense_rtd_map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

@@ -1,7 +1,7 @@
 #ifndef RTD_H
 #define RTD_H
 
-#include "../Sensor.h"
+#include "Sensor.h"
 
 class RTD : public Sensor {
     public:
