@@ -1,7 +1,7 @@
 #ifndef DCT500_H
 #define DCT500_H
 
-#include "../Sensor.h"
+#include "Sensor.h"
 
 class DCT500 : public Sensor {
     public:
