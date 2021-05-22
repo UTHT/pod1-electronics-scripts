@@ -1,7 +1,7 @@
 #ifndef OPT2002_H
 #define OPT2002_H
 
-#include "../Sensor.h"
+#include "Sensor.h"
 
 class OPT2002 : public Sensor {
     public:
