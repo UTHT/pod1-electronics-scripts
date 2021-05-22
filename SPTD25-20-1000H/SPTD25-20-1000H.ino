@@ -1,23 +1,70 @@
-const int sensorPin = A0;    // select the input pin for the pressure sensor
-int sensorValue = 0;  // variable to store the value coming from the sensor
+// Headers for each sensor type
+#include "SPTD25-20-1000H.h" 
+//...
 
-void setup() {
-  pinMode(A0, INPUT);
-  Serial.begin(115200);
+#include "Sensor.h"
+#define NUMSENSORS 1 //Or however many
+#define BAUDRATE 115200
+#define THISARDUINO ARDUINO_ONE
+
+// Objects for each sensor
+SPTD25_20_1000H sptd25_20_1000h(3, THISARDUINO); 
+//...
+
+Sensor* sensors[NUMSENSORS] = {
+    // Entry for each sensor object
+    &sptd25_20_1000h, 
+    //...
+};
+
+// !#!#!#!--- EVERYTHING AFTER HERE DOES NOT NEED TO BE CHANGED FOR SENSOR IMPLEMENTATION ---!#!#!#!
+
+void setup(){
+    Serial.begin(BAUDRATE);
+
+    bool success = true;
+    for(int i = 0; i < NUMSENSORS; i++){
+        SensorState* state = sensors[i]->begin();
+        // Print/send sensor post-setup state data here. For example:
+        bool _success = (state->error == ERR_NONE);
+        if(_success){
+            Serial.print("Sensor ");
+            Serial.print(sensors[i]->sensor);
+            Serial.println(" initialized.");
+        } else {
+            Serial.print("Sensor ");
+            Serial.print(sensors[i]->sensor);
+            Serial.println(" failed to initialize!");
+        }
+        success &= _success;
+    }
+    if(!success){
+        Serial.println("POST failed on one or more sensors, freezing...");
+        while(1){delay(1000);}
+    }
 }
 
-double map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-void loop() {
-  // read the value from the sensor:
-  sensorValue = analogRead(sensorPin);
-  
-  // TODO Calibrate from 0 psi to 200 psi
-  // Currently sensorValue at 0 psi is 176 - 177
-  Serial.print(sensorValue);
-  Serial.print('\t');
-  Serial.println(map(sensorValue, 176.0, 1023.0, 0, 200.0), 5);
-  
+void loop(){
+    for(int i = 0; i < NUMSENSORS; i++){
+        SensorState* state = sensors[i]->update();
+        // Print/send sensor post-setup state data here. For example:
+        bool _success = (state->error == ERR_NONE);
+        bool _new = (state->debug == DS_NEWREAD);
+        if(_success && _new){
+            Serial.print("Sensor ");
+            Serial.print(sensors[i]->sensor);
+            Serial.print(" read success: ");
+            for(int x = 0; x < state->numdata; x++){
+                Serial.print(state->data[x].data);
+                Serial.print(' ');
+                Serial.print(state->data[x].units);
+                if(x < state->numdata-1){Serial.print(", ");}
+            }
+        } else {
+            Serial.print("Sensor ");
+            Serial.print(sensors[i]->sensor);
+            Serial.println(" failed to update!");
+            // TODO: Recover failed sensor?
+        }
+    }
 }

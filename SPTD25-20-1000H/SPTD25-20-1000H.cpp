@@ -12,6 +12,10 @@ errorlevel_t SPTD25_20_1000H::init(){
     return ERR_NONE;
 }
 
+double sptd25_20_1000h_map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 // TODO Calibrate from 0 psi to 200 psi
 // Currently sensorValue at 0 psi is 176 - 177
 errorlevel_t SPTD25_20_1000H::read(t_datum* data, uint8_t numdata){
@@ -24,8 +28,4 @@ errorlevel_t SPTD25_20_1000H::read(t_datum* data, uint8_t numdata){
     data[1].data = (float)sptd25_20_1000h_map(val, 176.0, 1023.0, 0, 200.0);
     // TODO: other error conditions?
     return ERR_NONE;
-}
-
-double sptd25_20_1000h_map(const int x, const double in_min, const double in_max, const double out_min, const double out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
