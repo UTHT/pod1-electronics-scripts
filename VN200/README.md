@@ -4,11 +4,11 @@
 
 ### Sensor Output
 - Position (GPS)
-- Rotation [°/s, (Euler angles)], range: -2000[°/s] to +2000[°/s]
+- Rotation [°/s, (Euler angles)], range: ±2000[°/s]
 - Velocity [m/s], range: 0[m/s] to 500[m/s]
-- Acceleration [g], range: -16[g] to +16[g]
+- Acceleration [g], range: ±16[g]
 - Angular velocity [°/s, (Euler angles)]
-- Magnetic field [Gauss], range: -2.5[Gauss] to +2.5[Gauss]
+- Magnetic field [Gauss], range: ±2.5[Gauss]
 - Pressure [mbar], range: 10[mbar] to 1200[mbar]
 
 ### Sensor Use
