@@ -1,10 +1,10 @@
 #ifndef MPU9250_H
 #define MPU9250_H
 
-#include "../Sensor.h"
-#include "libraries/MPU9250_Lib.h"
-#include "libraries/quaternionFilters.h" // Currently Unused.
-#include "libraries/arduinoFFT.h"
+#include "Sensor.h"
+#include "MPU9250_Lib.h"
+#include "quaternionFilters.h" // Currently Unused.
+#include "arduinoFFT.h"
 #include "Wire.h"
 #define AHRS false          // Set to false for basic data read
 #define SerialDebug true    // Set to true to get Serial output for debugging
