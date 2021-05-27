@@ -26,7 +26,7 @@ errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
 
     // Error checking (opt2002 has a PNP output, turn positive when an error has occurred)
     // An error occurs when the sensor cannot detect an object too. Also the red F LED on the sensor lights up.
-    sensorVal = digitalRead(errpin)
+    double sensorVal = digitalRead(errpin)
     if (sensorVal == HIGH){
         return ERR_WARN
     }
