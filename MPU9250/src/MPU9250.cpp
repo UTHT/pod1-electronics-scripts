@@ -3,7 +3,15 @@
 const char* arr[9] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]"};
 t_datasetup datasetup = {9, arr};
 
+arduinoFFT FFT = arduinoFFT();
+double vReal[SAMPLES];
+double vImag[SAMPLES];
+int count = 0;
+double peak = 0.0;
+double vibrationFreq;
+
 MPU9250::MPU9250(arduino_t arduino) : Sensor(S_MPU9250, arduino, datasetup, 250){
+    this->mpu9250 = MPU9250_Lib(MPU9250_ADDRESS, I2Cport, I2Cclock);
 }
 
 errorlevel_t MPU9250::init(){
@@ -41,55 +49,9 @@ errorlevel_t MPU9250::init(){
     }
 }
 
-// TODO Calibrate imu readings
-errorlevel_t MPU9250::read(t_datum* data, uint8_t numdata){
-    // NOTE: Convention - check that numdata given matches expected
-    if(numdata != 9){ //TODO: globally declare the array size instead of using the int value
-      return ERR_FAIL;
-    }
-    // Check if data ready
-    if (mpu9250.readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01) {
-        getData();
-    }
 
-    if(ENABLE_FFT) {
-        // Collecting data for fourier transform
-        // Can only be configured for one axis only, due to memory constraint
-        // For other axes, set FFT_AXIS 'x', 'y', 'z'
-        switch(FFT_AXIS) {
-            case 'x':
-                vReal[count] = (double) mpu9250.ax;
-                break;
-            case 'y':
-                vReal[count] = (double) mpu9250.ay;
-                break;
-            case 'z':
-                vReal[count] = (double) mpu9250.az;
-                break;
-        }
+void getData(MPU9250_Lib mpu9250) {
 
-        count++;
-        if(count-1 > SAMPLES) {
-            peak = computeFFT(vReal);
-            count = 0;
-        }
-    }
-
-    // Copy buffer
-    data[0].data = (float)(*mpu9250.ax);
-    data[1].data = (float)(*mpu9250.ay);
-    data[2].data = (float)(*mpu9250.az);
-    data[3].data = (float)(*mpu9250.gx);
-    data[4].data = (float)(*mpu9250.gy);
-    data[5].data = (float)(*mpu9250.gz);
-    data[6].data = (float)(*mpu9250.mx);
-    data[7].data = (float)(*mpu9250.my);
-    data[8].data = (float)(*mpu9250.mz);
-    // TODO: other error conditions?
-    return ERR_NONE;
-}
-
-void getData() {
     //Read Acceleration Raw
     mpu9250.readAccelData(mpu9250.accelCount);
 
@@ -130,4 +92,53 @@ double computeFFT(double vReal[]) {
   FFT.ComplexToMagnitude(vReal, vImag, SAMPLES);
   double peak = FFT.MajorPeak(vReal, SAMPLES, SAMPLING_FREQUENCY);
   return peak;
+}
+
+
+// TODO Calibrate imu readings
+errorlevel_t MPU9250::read(t_datum* data, uint8_t numdata){
+    // NOTE: Convention - check that numdata given matches expected
+    if(numdata != 9){ //TODO: globally declare the array size instead of using the int value
+      return ERR_FAIL;
+    }
+    // Check if data ready
+    if (mpu9250.readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01) {
+        getData(mpu9250);
+    }
+
+    if(ENABLE_FFT) {
+        // Collecting data for fourier transform
+        // Can only be configured for one axis only, due to memory constraint
+        // For other axes, set FFT_AXIS 'x', 'y', 'z'
+        switch(FFT_AXIS) {
+            case 'x':
+                vReal[count] = (double) mpu9250.ax;
+                break;
+            case 'y':
+                vReal[count] = (double) mpu9250.ay;
+                break;
+            case 'z':
+                vReal[count] = (double) mpu9250.az;
+                break;
+        }
+
+        count++;
+        if(count-1 > SAMPLES) {
+            peak = computeFFT(vReal);
+            count = 0;
+        }
+    }
+
+    // Copy buffer
+    data[0].data = (float)(1000*mpu9250.ax);
+    data[1].data = (float)(1000*mpu9250.ay);
+    data[2].data = (float)(1000*mpu9250.az);
+    data[3].data = (float)(mpu9250.gx);
+    data[4].data = (float)(mpu9250.gy);
+    data[5].data = (float)(mpu9250.gz);
+    data[6].data = (float)(mpu9250.mx);
+    data[7].data = (float)(mpu9250.my);
+    data[8].data = (float)(mpu9250.mz);
+    // TODO: other error conditions?
+    return ERR_NONE;
 }

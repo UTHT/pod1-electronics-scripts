@@ -17,18 +17,18 @@
 #define SAMPLING_FREQUENCY 1000
 
 // FFT
-arduinoFFT FFT = arduinoFFT();
-double vReal[SAMPLES];
-double vImag[SAMPLES];
-int count = 0;
-double peak = 0.0;
-double vibrationFreq;
+extern arduinoFFT FFT;
+extern double vReal[SAMPLES];
+extern double vImag[SAMPLES];
+extern int count;
+extern double peak;
+extern double vibrationFreq;
 
 class MPU9250 : public Sensor {
     public:
         MPU9250(arduino_t arduino);
     private:
-        MPU9250_Lib mpu9250(MPU9250_ADDRESS, I2Cport, I2Cclock);
+        MPU9250_Lib mpu9250;
         errorlevel_t read(t_datum* data, uint8_t numdata) override;
         errorlevel_t init() override;
         /**
