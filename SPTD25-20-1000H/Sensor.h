@@ -5,7 +5,7 @@
 #include "stdlib.h"
 
 // Sensor identifiers
-typedef enum sensor_t {
+typedef enum sensors_t {
   S_OPT2002,
   S_VN200,
   S_PROSENSERTD,
@@ -15,7 +15,7 @@ typedef enum sensor_t {
   S_SPTD25_20_1000H,
   S_SPTD25_20_0200A,
   S_CANBUS
-} sensor_t;
+} sensors_t;
 
 // Arduino identifiers
 typedef enum arduino_t {
@@ -72,7 +72,7 @@ typedef struct SensorState {
 
 // Wrapper for all sensor stuff - this is what gets passed to the main computer
 typedef struct SensorData {
-  sensor_t sensor;
+  sensors_t sensor;
   arduino_t arduino;
   SensorState state;
 } SensorData;
@@ -96,11 +96,11 @@ class Sensor{
     SensorState state;   //Stores all the latest state data for this sensor.
   public:
     arduino_t arduino;
-    sensor_t sensor;
+    sensors_t sensor;
     // Wrappers return pointer to updated state
     SensorState* update();  //Calls read(), manages delta, and wraps all t_datum
     SensorState* begin();   //Sets state in accordance with init()
-    Sensor(sensor_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta);
+    Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta);
 };
 
 #endif
