@@ -10,7 +10,7 @@ OPT2002::OPT2002(uint8_t inpin, uint8_t errpin, arduino_t arduino) : Sensor(S_OP
 
 errorlevel_t OPT2002::init(){
     pinMode(inpin, INPUT);
-    pinMode(errpin, INPUT);
+    pinMode(errpin, INPUT_PULLUP);      // To use the internal resistor in the arduino
     return ERR_NONE;
 }
 
@@ -28,11 +28,11 @@ errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     digitalWrite(errpin,LOW);
     digitalWrite(errpin,HIGH);
 
-    // TODO: Figure out the error checking
-    // String error = String(digitalRead(errpin));
-    // if(error.length() > 0){
-    //     return ERR_WARN;
-    // }
+    // Error checking (opt2002 has a PNP output, turn positive when an error has occurred)
+    sensorVal = digitalRead(errpin)
+    if (sensorVal == LOW){
+        return ERR_WARN
+    }
 
     // Set its analog output as voltage output(10V)
     const double resistor = 300;     // ohm (we are using THREE 100 ohm ressitor for a voltage divider) 
