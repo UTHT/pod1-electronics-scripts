@@ -1,14 +1,14 @@
 // Headers for each sensor type
-#include "SPTD25-20-1000H.h" 
+#include "src/SPTD25-20-1000H.h" 
 //...
 
-#include "Sensor.h"
+#include "src/Sensor.h"
 #define NUMSENSORS 1 //Or however many
 #define BAUDRATE 115200
 #define THISARDUINO ARDUINO_ONE
 
 // Objects for each sensor
-SPTD25_20_1000H sptd25_20_1000h(3, THISARDUINO); 
+SPTD25_20_1000H sptd25_20_1000h(A0, THISARDUINO); 
 //...
 
 Sensor* sensors[NUMSENSORS] = {
