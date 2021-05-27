@@ -23,12 +23,13 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
       return ERR_FAIL;
     }
 
-    const double resistor = 200     // ohm (we are using TWO 100 ohm ressitor for a voltage divider) 
-    double ouput_voltage = analogRead(pin);     // in V
-
-    // Calibrate from analogRead to 10V (AnalogRead has a max of 5V, the sensor outputs 10V, we are using a voltage divider )
-    double ouput_voltage = dct500_map(ouput_voltage, 0, 1023, 0, 10)
-    double read_current = ouput_voltage / resistor
+    const double resistor = 300     // ohm (we are using THREE 100 ohm ressitor for a voltage divider) 
+    // For Arduino Due voltage divider using 3 100 ohm resistors, 10V input read as 3.3V at the Arduino
+    // For Arduino Mega voltage divider using 2 100 ohm resistors, 10V input read as 5.0V at the Arduino
+    
+    // Calibrate from analogRead to 10V (undoing the voltage divider )
+    double output_voltage = dct500_map(analogRead(pin), 0, 1023, 0, 10)
+    double read_current = output_voltage / resistor
 
     // Calibrate from 0 A to 500 A
     double calculated_current = dct500_map(read_current, 4, 20, 0, 500)
