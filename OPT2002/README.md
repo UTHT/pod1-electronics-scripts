@@ -4,7 +4,7 @@
 
 ### Sensor Output
 - Distance [mm], range: 30[mm] to 80[mm]
-- An indication if there exists an error 
+- An indication if there exists an error(or if it cannot detect an object within the range) 
 
 ### Sensor Use
 - The OPT2002 measures the gap between the bottom of the pod’s frame to the top of the I beam. There will be a control system associated with this sensor and its readings will be used to tune the pod and emergency stop the pod. Check the user manuel for how to use the sensor(turn it on/off) and what the LED means. 
