@@ -37,11 +37,11 @@ errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     // For Arduino Mega voltage divider using 2 100 ohm resistors, 10V input read as 5.0V at the Arduino
     
     // Calibrate from analogRead to 10V (undoing the voltage divider)
-    double voltage = dct500_map(analogRead(inpin), 0, 1023, 0, 10);
+    double voltage = opt2002_map(analogRead(inpin), 0, 1023, 0, 10);
     double current = voltage / resistor;
 
     // Calibrate from 30mm to 80mm
-    double distance = dct500_map(current, 4, 20, 30, 80);
+    double distance = opt2002_map(current, 4, 20, 30, 80);
 
     data[0].data = (float)distance;
     // TODO: other error conditions?
