@@ -1,8 +1,8 @@
 // Headers for each sensor type
-#include "OPT2002.h" 
+#include "src/OPT2002.h" 
 //...
 
-#include "Sensor.h"
+#include "src/Sensor.h"
 #define NUMSENSORS 1 //Or however many
 #define BAUDRATE 115200
 #define THISARDUINO ARDUINO_ONE
