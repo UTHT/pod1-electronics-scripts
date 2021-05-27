@@ -20,17 +20,14 @@ double opt2002_map(const int x, const double in_min, const double in_max, const 
 }
 
 errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
-    // NOTE: Convention - check that numdata given matches expected
     if(numdata != 1){ //TODO: globally declare the array size instead of using the int value
       return ERR_FAIL;
     }
-    //turn on the sensors
-    digitalWrite(errpin,LOW);
-    digitalWrite(errpin,HIGH);
 
     // Error checking (opt2002 has a PNP output, turn positive when an error has occurred)
+    // An error occurs when the sensor cannot detect an object too. Also the red F LED on the sensor lights up.
     sensorVal = digitalRead(errpin)
-    if (sensorVal == LOW){
+    if (sensorVal == HIGH){
         return ERR_WARN
     }
 
