@@ -1,14 +1,14 @@
 // Headers for each sensor type
-#include "DCT500.h" 
+#include "src/DCT500.h" 
 //...
 
-#include "Sensor.h"
+#include "src/Sensor.h"
 #define NUMSENSORS 1 //Or however many
 #define BAUDRATE 115200
 #define THISARDUINO ARDUINO_ONE
 
 // Objects for each sensor
-DCT500 dct500(3, THISARDUINO); 
+DCT500 dct500(A0, THISARDUINO); 
 //...
 
 Sensor* sensors[NUMSENSORS] = {
