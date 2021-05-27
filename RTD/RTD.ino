@@ -1,14 +1,14 @@
 // Headers for each sensor type
-#include "RTD.h" 
+#include "src/RTD.h" 
 //...
 
-#include "Sensor.h"
+#include "src/Sensor.h"
 #define NUMSENSORS 1 //Or however many
 #define BAUDRATE 115200
 #define THISARDUINO ARDUINO_ONE
 
 // Objects for each sensor
-RTD rtd(3, THISARDUINO); 
+RTD rtd(A0, THISARDUINO); 
 //...
 
 Sensor* sensors[NUMSENSORS] = {
