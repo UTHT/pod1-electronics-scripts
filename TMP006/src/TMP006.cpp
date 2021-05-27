@@ -9,7 +9,7 @@ TMP006::TMP006(uint8_t addr, arduino_t arduino) : Sensor(S_TMP006, arduino, data
 
 errorlevel_t TMP006::init(){
     //TODO is tmp006.wake(); required after tmp006.begin() to turn on the tmp006
-    return (tmp006.begin(TMP006_CFG_4SAMPLE) ? ERR_NONE : ERR_FAIL);
+    return (tmp006->begin(TMP006_CFG_4SAMPLE) ? ERR_NONE : ERR_FAIL);
 }
 
 // TODO Calibrate temperature readings
@@ -20,8 +20,8 @@ errorlevel_t TMP006::read(t_datum* data, uint8_t numdata){
     }
 
     // Copy buffer
-    data[0].data = tmp006.readObjTempC();
-    data[1].data = tmp006.readDieTempC();
+    data[0].data = tmp006->readObjTempC();
+    data[1].data = tmp006->readDieTempC();
 
     // TODO: other error conditions?
     return ERR_NONE;
