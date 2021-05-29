@@ -10,13 +10,11 @@ int count = 0;
 double peak = 0.0;
 double vibrationFreq;
 
-MPU9250::MPU9250(arduino_t arduino) : Sensor(S_MPU9250, arduino, datasetup, 250)
-{
+MPU9250::MPU9250(arduino_t arduino) : Sensor(S_MPU9250, arduino, datasetup, 250) {
     this->mpu9250 = MPU9250_Lib(MPU9250_ADDRESS, I2Cport, I2Cclock);
 }
 
-errorlevel_t MPU9250::init()
-{
+errorlevel_t MPU9250::init() {
     Wire.begin();
 
     // Read the WHO_AM_I register, this is a good test of communication
@@ -87,8 +85,7 @@ void getData(MPU9250_Lib *mpu9250)
  * Function: Calculates vibration frequency from the accelerometer data vReal
  * Return: peak, the corresponding vib frequency
  */
-double computeFFT(double vReal[])
-{
+double computeFFT(double vReal[]) {
     double vImag[SAMPLES] = {0.0};
     FFT.Windowing(vReal, SAMPLES, FFT_WIN_TYP_HAMMING, FFT_FORWARD);
     FFT.Compute(vReal, vImag, SAMPLES, FFT_FORWARD);
@@ -98,26 +95,22 @@ double computeFFT(double vReal[])
 }
 
 // TODO Calibrate imu readings
-errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata)
-{
+errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
     // NOTE: Convention - check that numdata given matches expected
     if (numdata != 9)
     { //TODO: globally declare the array size instead of using the int value
         return ERR_FAIL;
     }
     // Check if data ready
-    if (mpu9250.readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01)
-    {
+    if (mpu9250.readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01) {
         getData(&mpu9250);
     }
 
-    if (ENABLE_FFT)
-    {
+    if (ENABLE_FFT) {
         // Collecting data for fourier transform
         // Can only be configured for one axis only, due to memory constraint
         // For other axes, set FFT_AXIS 'x', 'y', 'z'
-        switch (FFT_AXIS)
-        {
+        switch (FFT_AXIS) {
         case 'x':
             vReal[count] = (double)mpu9250.ax;
             break;
@@ -130,8 +123,7 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata)
         }
 
         count++;
-        if (count - 1 > SAMPLES)
-        {
+        if (count - 1 > SAMPLES) {
             peak = computeFFT(vReal);
             count = 0;
         }
