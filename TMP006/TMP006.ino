@@ -52,15 +52,17 @@ void loop(){
         // Print/send sensor post-setup state data here. For example:
         bool _success = (state->error == ERR_NONE);
         bool _new = (state->debug == DS_NEWREAD);
-        if(_success && _new){
-            Serial.print("Sensor ");
-            Serial.print(sensors[i]->sensor);
-            Serial.print(" read success: ");
-            for(int x = 0; x < state->numdata; x++){
-                Serial.print(state->data[x].data);
-                Serial.print(' ');
-                Serial.print(state->data[x].units);
-                if(x < state->numdata-1){Serial.print(", ");}
+        if(_success){
+            if(_new){
+                Serial.print("Sensor ");
+                Serial.print(sensors[i]->sensor);
+                Serial.print(" read success: ");
+                for(int x = 0; x < state->numdata; x++){
+                    Serial.print(state->data[x].data);
+                    Serial.print(' ');
+                    Serial.print(state->data[x].units);
+                    if(x < state->numdata-1){Serial.print(", ");}else{Serial.println();}
+                }
             }
         } else {
             Serial.print("Sensor ");
