@@ -1,6 +1,7 @@
 #define pulse_pin 2
-int ontime,offtime,duty;
-float freq,period;
+/* These variables MUST be unsigned long for this to work! */
+unsigned long ontime,offtime,duty;
+unsigned long freq,period;
 
 void setup() {
   Serial.begin(9600);                    // connect to the serial port
@@ -19,8 +20,11 @@ void loop() {
   freq = 1000000.0/period;
   duty = (ontime/period)*100;
   float flow =  map_float(freq,0, 100, 0.26, 5.28);  //measured in gallons per minute(gpm)
-  if(flow < 0.27) {
-    Serial.println('Flow is at or below minimum value of 0.26 gpm');
+  if(flow <= 0.27) {
+    Serial.println("Flow is at or below minimum value of 0.26 gpm");
+  }
+  else if(flow > 6){
+    Serial.println(freq);
   }
   else {
     Serial.println(flow);
