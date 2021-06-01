@@ -23,7 +23,7 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
       return ERR_FAIL;
     }
 
-    const double resistor = 200;     // ohm (we are using THREE 100 ohm ressitor for a voltage divider) 
+    const double resistor = 300;
     // For Arduino Due voltage divider using 3 100 ohm resistors, 10V input read as 3.3V at the Arduino
     // For Arduino Mega voltage divider using 2 100 ohm resistors, 10V input read as 5.0V at the Arduino
     
@@ -34,7 +34,7 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
 
     if(read_current != 0){
         // Calibrate from 0 A to 500 A
-        double calculated_current = dct500_map(read_current, 4, 20, 0, 500);
+        calculated_current = dct500_map(read_current, 4, 20, 0, 500);
     }
     
     data[0].data = (float)calculated_current;
