@@ -30,11 +30,9 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     // Calibrate from analogRead to 10V (undoing the voltage divider )
     double output_voltage = dct500_map(analogRead(pin), 0, 1023, 0, 10);
     double read_current = output_voltage / resistor;
+    double calculated_current = 0;
 
-    if(read_current == 0){
-        double calculated_current = 0;
-    }
-    else{
+    if(read_current != 0){
         // Calibrate from 0 A to 500 A
         double calculated_current = dct500_map(read_current, 4, 20, 0, 500);
     }
