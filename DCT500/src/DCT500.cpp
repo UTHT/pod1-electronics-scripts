@@ -32,7 +32,7 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     double read_current = output_voltage / resistor;
 
     if(read_current == 0){
-        calculated_current = 0;
+        double calculated_current = 0;
     }
     else{
         // Calibrate from 0 A to 500 A
