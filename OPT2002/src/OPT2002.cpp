@@ -33,10 +33,10 @@ errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
 
     // Set its analog output as voltage output(10V)
     const double resistor = 300;    
-    // For Arduino Due voltage divider using 3 100 ohm resistors, 10V input read as 3.3V at the Arduino
-    // For Arduino Mega voltage divider using 2 100 ohm resistors, 10V input read as 5.0V at the Arduino
+    // For Arduino Due use a 300 ohm resistor, 10V input read as 3.3V at the Arduino
+    // For Arduino Mega use a 200 ohm resistors, 10V input read as 5.0V at the Arduino
     
-    // Calibrate from analogRead to 10V (undoing the voltage divider)
+    // Calibrate from analogRead to 10V (undoing the resistor)
     double voltage = opt2002_map(analogRead(inpin), 0, 1023, 0, 10);
     double current = voltage / resistor;
     double distance = 0
