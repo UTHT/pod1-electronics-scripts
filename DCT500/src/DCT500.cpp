@@ -24,10 +24,10 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     }
 
     const double resistor = 300;
-    // For Arduino Due voltage divider using 3 100 ohm resistors, 10V input read as 3.3V at the Arduino
-    // For Arduino Mega voltage divider using 2 100 ohm resistors, 10V input read as 5.0V at the Arduino
+    // For Arduino Due use a 300 ohm resistor, 10V input read as 3.3V at the Arduino
+    // For Arduino Mega use a 200 ohm resistors, 10V input read as 5.0V at the Arduino
     
-    // Calibrate from analogRead to 10V (undoing the voltage divider )
+    // Calibrate from analogRead to 10V (undoing the resistor)
     double output_voltage = dct500_map(analogRead(pin), 0, 1023, 0, 10);
     double read_current = output_voltage / resistor;
     double calculated_current = 0;
