@@ -125,6 +125,7 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
         count++;
         if (count - 1 > SAMPLES) {
             peak = computeFFT(vReal);
+			    Serial.print("vibration frequency: "); Serial.print(peak); Serial.println(" mg/Hz");
             count = 0;
         }
     }

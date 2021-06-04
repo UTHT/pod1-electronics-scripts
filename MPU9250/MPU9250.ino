@@ -1,3 +1,11 @@
+/*
+ * ## Note to Testers ##
+ * 
+ * FFT is by default OFF
+ * To turn FFT on, please refer to line 64 below,
+ * and refer to line 18-23 in src/MPU9250.h
+ */
+
 // Headers for each sensor type
 #include "src/MPU9250.h" 
 //...
@@ -52,6 +60,8 @@ void loop(){
         bool _new = (state->debug == DS_NEWREAD);
         if(_success){
             if(_new){
+
+                // vv Recommend commenting this bit out to see FFT printout vv
                 Serial.print("Sensor ");
                 Serial.print(sensors[i]->sensor);
                 Serial.print(" read success: ");
@@ -61,6 +71,7 @@ void loop(){
                     Serial.print(state->data[x].units);
                     if(x < state->numdata-1){Serial.print(", ");}else{Serial.println();}
                 }
+                // ^^ ----------------------------------------------------- ^^
             }
         } else {
             Serial.print("Sensor ");
