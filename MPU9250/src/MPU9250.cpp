@@ -1,7 +1,7 @@
 #include "MPU9250.h"
 
-const char *arr[9] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]"};
-t_datasetup datasetup = {9, arr};
+const char *arr[10] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]", "mg/Hz Peak [" FFT_AXIS "]"};
+t_datasetup datasetup = {10, arr};
 
 arduinoFFT FFT = arduinoFFT();
 double vReal[SAMPLES];
@@ -111,13 +111,13 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
         // Can only be configured for one axis only, due to memory constraint
         // For other axes, set FFT_AXIS 'x', 'y', 'z'
         switch (FFT_AXIS) {
-        case 'x':
+        case "x":
             vReal[count] = (double)mpu9250.ax;
             break;
-        case 'y':
+        case "y":
             vReal[count] = (double)mpu9250.ay;
             break;
-        case 'z':
+        case "z":
             vReal[count] = (double)mpu9250.az;
             break;
         }
@@ -125,7 +125,7 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
         count++;
         if (count - 1 > SAMPLES) {
             peak = computeFFT(vReal);
-			    Serial.print("vibration frequency: "); Serial.print(peak); Serial.println(" mg/Hz");
+            // Serial.print("vibration frequency: "); Serial.print(peak); Serial.println(" mg/Hz");
             count = 0;
         }
     }
@@ -140,6 +140,7 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
     data[6].data = (float)(mpu9250.mx);
     data[7].data = (float)(mpu9250.my);
     data[8].data = (float)(mpu9250.mz);
+    data[9].data = (float)peak;
 
     // TODO: other error conditions?
     return ERR_NONE;

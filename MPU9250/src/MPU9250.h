@@ -11,7 +11,7 @@
 #define I2Cclock 400000     // Options: 100k, 400k
 #define I2Cport Wire
 #define MPU9250_ADDRESS 104 // I2C Address: 0x68
-#define FFT_AXIS 'x'        // Can set FFT_AXIZ to 'x', 'y', or 'z'
+#define FFT_AXIS "x"        // Can set FFT_AXIZ to 'x', 'y', or 'z'
 #define SAMPLES 256         // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 
