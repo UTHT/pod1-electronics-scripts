@@ -1,18 +1,18 @@
-# AcuAMP DCT500-42-24-F
+# VFS500-5-1001
 
 ## Sensor Information
 
 ### Sensor Output
-- Current [Amp], range: 0[A] to 500[A]
+- Flow rate [GPM (gallons per minute)], range: 0.26[GPM] to 5.28[GPM]
 
 ### Sensor Use
-- This sensor monitors the current output from the high voltage battery system (direct current) to the inverter/motor for safety, alerting the team in case of any irregularity. 
+- This sensor monitors the flowrate. 
 
 ### Code Description
-1. Current is calculated by proportionally mapping the output of the sensor(4-20mA) over the Current range(0-500A).
-2. The calculated current is returned
+1. flowrate is calculated by proportionally mapping the output of the sensor to the range of the sensor. 
+2. The calculated flowrate is returned
 
-> Documentation for the **AcuAMP DCT500-42-24-F** can be found [here](https://drive.google.com/drive/folders/1aCNqstzJIpOQPqIivENDAhGuTG0A5oau?usp=sharing).
+> Documentation for the **VFS500-5-1001** can be found [here](https://drive.google.com/drive/folders/1deojUp-AtpicnC5j-VA0yBxbSn9a6Ph7?usp=sharing).
 
 
 
