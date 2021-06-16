@@ -1,5 +1,5 @@
 // Headers for each sensor type
-#include "src/DCT500.h" 
+#include "src/VFS500.h" 
 //...
 
 #include "src/Sensor.h"
@@ -8,12 +8,12 @@
 #define THISARDUINO ARDUINO_ONE
 
 // Objects for each sensor
-DCT500 dct500(A0, THISARDUINO); 
+VFS500 vfs500(A0, THISARDUINO); 
 //...
 
 Sensor* sensors[NUMSENSORS] = {
     // Entry for each sensor object
-    &dct500, 
+    &vfs500, 
     //...
 };
 
