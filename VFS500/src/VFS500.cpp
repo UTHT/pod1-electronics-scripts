@@ -32,7 +32,15 @@ errorlevel_t VFS500::read(t_datum* data, uint8_t numdata){
     
     float flow =  VFS500_map(freq, 0, 100, 0.26, 5.28);     //measured in gallons per minute(gpm)
     
-    data[0].data = (float)flow;
+    if(flow <= 0.27) {
+        return ERR_FAIL;        //Flow is at or below minimum value of 0.26 gpm
+    }
+    else if(flow > 6){
+        data[0].data = (float)freq;
+    }
+    else {
+        data[0].data = (float)flow;
+    }
     // TODO: other error conditions?
     return ERR_NONE;
 }
