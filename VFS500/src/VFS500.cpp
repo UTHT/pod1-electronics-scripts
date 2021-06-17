@@ -23,8 +23,8 @@ errorlevel_t VFS500::read(t_datum* data, uint8_t numdata){
       return ERR_FAIL;
     }
 
-    float ontime = pulseIn(pulse_pin,HIGH);
-    float offtime = pulseIn(pulse_pin,LOW);
+    float ontime = pulseIn(pin,HIGH);
+    float offtime = pulseIn(pin,LOW);
     float period = ontime + offtime;
 
     float freq = 1000000.0 / period;
