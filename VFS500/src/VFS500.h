@@ -3,9 +3,9 @@
 
 #include "Sensor.h"
 
-class DCT500 : public Sensor {
+class VFS500 : public Sensor {
     public:
-        DCT500(uint8_t pin, arduino_t arduino);
+        VFS500(uint8_t pin, arduino_t arduino);
     private:
         errorlevel_t read(t_datum* data, uint8_t numdata) override;
         errorlevel_t init() override;
