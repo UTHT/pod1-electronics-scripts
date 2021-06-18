@@ -3,7 +3,8 @@
 ## Sensor Information
 
 ### Sensor Output
-- Flow rate [GPM (gallons per minute)], range: 0.26[GPM] to 5.28[GPM]
+- Flow rate [GPM (gallons per minute)], range: 0.26[GPM] to 5.28[GPM]   (data[1])
+- Frequency [Hz]    (data[0])
 
 ### Sensor Use
 - This sensor monitors the flowrate. 
