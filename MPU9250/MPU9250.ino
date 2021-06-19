@@ -64,7 +64,11 @@ void loop(){
                 // vv Recommend commenting this bit out to see FFT printout vv
                 Serial.print("Sensor ");
                 Serial.print(sensors[i]->sensor);
-                Serial.print(" read success: ");
+                Serial.print(" read success (DS: ");
+                Serial.print(state->debug);
+                Serial.print(", ES: ");
+                Serial.print(state->error);
+                Serial.print(") ");
                 for(int x = 0; x < state->numdata; x++){
                     Serial.print(state->data[x].data);
                     Serial.print(' ');
