@@ -39,7 +39,7 @@ errorlevel_t OPT2002::read(t_datum* data, uint8_t numdata){
     // Calibrate from analogRead to 10V (undoing the resistor)
     double voltage = opt2002_map(analogRead(inpin), 0, 1023, 0, 10);
     double current = voltage / resistor;
-    double distance = 0
+    double distance = 0;
 
     if(current != 0){
         // Calibrate from 30mm to 80mm
