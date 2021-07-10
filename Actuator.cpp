@@ -15,7 +15,7 @@ ActuatorState* Actuator::update(){
 
         switch(state.error){
             case ERR_NONE:  //Success!
-                state.debug = DS_NEWREAD;
+                state.debug = DS_SUCCESS;
                 break;
             case ERR_WARN:  //Read didn't go as planned, non-fatal
                 // DO NOT UPDATE STATE VALUES

@@ -26,7 +26,7 @@ typedef enum debuglevel_t {
   DS_INIT,         //NULL
   // DS_CALIBRATING,  //NULL if first time, otherwise unknown
   DS_WAITING,      //NOT NULL, age > 0
-  DS_NEWREAD          //NOT NULL, age == 0
+  DS_SUCCESS          //NOT NULL, age == 0
 } debuglevel_t;
 
 #endif
