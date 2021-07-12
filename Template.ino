@@ -59,7 +59,7 @@ void setup(){
             Serial.print(actuators[i]->actuator);
             Serial.print(" initialized. ");
 
-            state = actuators[i]->update();
+            state = actuators[i]->update(); // Initial set to default target
             _success = (state->error == ERR_NONE);
             if(_success){
                 Serial.print("Set to ");
