@@ -11,11 +11,11 @@
 #define I2Cclock 400000     // Options: 100k, 400k
 #define I2Cport Wire
 #define MPU9250_ADDRESS 104 // I2C Address: 0x68
-#define FFT_AXIS "x"        // Can set FFT_AXIZ to 'x', 'y', or 'z'
+#define FFT_AXIS 'x'       // Can set FFT_AXIZ to 'x', 'y', or 'z'
 #define SAMPLES 256         // Must be a power of 2
 #define SAMPLING_FREQUENCY 1000
 
-#define ENABLE_FFT false     // Set to true for FFT calculations
+#define ENABLE_FFT true     // Set to true for FFT calculations
 /**
  * For FFT, set the last parameter to 1 in MPU9250 constructor in MPU9250.cpp on line 13
  *     Reason being that FFT requires 256 samples

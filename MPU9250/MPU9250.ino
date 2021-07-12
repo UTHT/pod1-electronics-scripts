@@ -1,7 +1,7 @@
 /*
  * ## Note to Testers ##
  * 
- * FFT is by default OFF
+ * FFT is by default ON (in this version)
  * To turn FFT on, please refer to line 64 below,
  * and refer to line 18-23 in src/MPU9250.h
  */
@@ -15,20 +15,13 @@
 #define BAUDRATE 115200
 #define THISARDUINO ARDUINO_ONE
 
-// Objects for each sensor
-MPU9250 mpu9250(THISARDUINO); 
-//...
-
-Sensor* sensors[NUMSENSORS] = {
-    // Entry for each sensor object
-    &mpu9250, 
-    //...
-};
+Sensor* sensors[NUMSENSORS];
 
 // !#!#!#!--- EVERYTHING AFTER HERE DOES NOT NEED TO BE CHANGED FOR SENSOR IMPLEMENTATION ---!#!#!#!
 
 void setup(){
     Serial.begin(BAUDRATE);
+    sensors[0] = new MPU9250(THISARDUINO);
 
     bool success = true;
     for(int i = 0; i < NUMSENSORS; i++){
@@ -81,3 +74,4 @@ void loop(){
         }
     }
 }
+
