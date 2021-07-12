@@ -1,6 +1,6 @@
 #include "MPU9250.h"
-
-const char *arr[10] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]", "mg/Hz Peak [" FFT_AXIS "]"};
+//TODO the last unit is hardcoded
+const char *arr[10] = {"mg [X]", "mg [Y]", "mg [Z]", "deg/sec [X]", "deg/sec [Y]", "deg/sec [Z]", "mG [X]", "mG [Y]", "mG [Z]", "mg/Hz Peak [X]"};
 t_datasetup datasetup = {10, arr};
 
 arduinoFFT FFT = arduinoFFT();
@@ -97,7 +97,7 @@ double computeFFT(double vReal[]) {
 // TODO Calibrate imu readings
 errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
     // NOTE: Convention - check that numdata given matches expected
-    if (numdata != 9)
+    if (numdata != 10)
     { //TODO: globally declare the array size instead of using the int value
         return ERR_FAIL;
     }
@@ -111,13 +111,13 @@ errorlevel_t MPU9250::read(t_datum *data, uint8_t numdata) {
         // Can only be configured for one axis only, due to memory constraint
         // For other axes, set FFT_AXIS 'x', 'y', 'z'
         switch (FFT_AXIS) {
-        case "x":
+        case 'x':
             vReal[count] = (double)mpu9250.ax;
             break;
-        case "y":
+        case 'y':
             vReal[count] = (double)mpu9250.ay;
             break;
-        case "z":
+        case 'z':
             vReal[count] = (double)mpu9250.az;
             break;
         }
