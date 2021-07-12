@@ -1,12 +1,12 @@
 #include "Arduino.h"
 #include "Actuator.h"
 
-Actuator::Actuator(actuators_t actuator, arduino_t arduino, float nulltarget){
+Actuator::Actuator(actuators_t actuator, arduino_t arduino, float failtarget){
     this->actuator = actuator;
     this->arduino = arduino;
     state.error = ERR_NONE;
     state.debug = DS_DISABLED;
-    state.target = this->nulltarget = nulltarget; // Default start target
+    state.target = this->failtarget = failtarget; // Default start target
 }
 
 ActuatorState* Actuator::update(){
@@ -17,11 +17,12 @@ ActuatorState* Actuator::update(){
             case ERR_NONE:  //Success!
                 state.debug = DS_SUCCESS;
                 break;
-            case ERR_WARN:  //Read didn't go as planned, non-fatal
+            case ERR_WARN:  //Set didn't go as planned, non-fatal
                 // DO NOT UPDATE STATE VALUES
                 break;
-            case ERR_FAIL:  //Read failed catastrophically
+            case ERR_FAIL:  //Set failed catastrophically
                 state.debug = DS_DISABLED;
+                set(failtarget);
                 break;
         }
     }

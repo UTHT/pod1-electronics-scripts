@@ -23,8 +23,8 @@ class Actuator{
   public:
     arduino_t arduino;
     actuators_t actuator;
-    float nulltarget;       // what should we default to in case of failure?
-    Actuator(actuators_t actuator, arduino_t arduino, float nulltarget);
+    float failtarget;       // what should we default to in case of failure?
+    Actuator(actuators_t actuator, arduino_t arduino, float failtarget);
     ActuatorState* update();
     ActuatorState* begin();
 };
