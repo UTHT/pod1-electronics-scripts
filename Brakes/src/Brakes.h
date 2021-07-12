@@ -2,7 +2,6 @@
 #define BRAKES_H
 
 #include "Actuator.h"
-
 class Brakes : public Actuator {
     public:
         Brakes(uint8_t pin, arduino_t arduino);
