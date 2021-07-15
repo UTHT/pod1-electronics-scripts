@@ -59,7 +59,7 @@ SensorState* Sensor::update(){
 
             switch(state.error){
                 case ERR_NONE:  //Success!
-                    state.debug = DS_NEWREAD;
+                    state.debug = DS_SUCCESS;
                     state.timestamp = lastread;
                     free(state.data);
                     state.data = buffer;
