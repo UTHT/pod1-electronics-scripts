@@ -21,7 +21,7 @@
 
 ## Broadcast Messages
 
-> CAN ID: `0x0A0-0x0AF`. See doc for example implementation (pgs.) and per-byte breakdown.
+> CAN ID: `0x0A0-0x0AF`. See doc for example implementation (pgs. 4-5) and per-byte breakdown (pgs. 5-11).
 
 | Address   | Frequency     | Content                                                 | CAN Active Messages (Low Word)   |
 |-----------|---------------|---------------------------------------------------------|----------------------------------|
@@ -45,7 +45,7 @@
 ***
 ## Command Messages
 
-> CAN ID: `0x0C0`. See doc for example implementation.
+> CAN ID: `0x0C0`. See doc for example implementation (pgs. 2-3).
 
 | Byte(s)  | Name                   | Format           | Description                                                                                                            |
 |----------|------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -60,7 +60,7 @@
 ***
 ## Parameter Messages
 
-> Sets EEPROM parameters. See doc for example implementation.
+> Sets EEPROM parameters.
 
 **CAN ID `0x0C1`** - Used to send message *to* controller.
 
