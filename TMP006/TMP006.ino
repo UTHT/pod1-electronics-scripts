@@ -52,7 +52,7 @@ void loop(){
         // Print/send sensor post-setup state data here. For example:
         bool _success = (state->error == ERR_NONE);
         bool _new = (state->debug == DS_SUCCESS);
-        if(_success && _new){
+        if(_success && _new) {
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
             Serial.print(" read success: ");

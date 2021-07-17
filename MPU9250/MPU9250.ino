@@ -51,7 +51,9 @@ void loop(){
         // Print/send sensor post-setup state data here. For example:
         bool _success = (state->error == ERR_NONE);
         bool _new = (state->debug == DS_SUCCESS);
-        if(_success && _new){
+        if(_success && _new) {
+            
+            // vv Recommend commenting this bit out to see FFT printout vv
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
             Serial.print(" read success: ");
@@ -61,6 +63,8 @@ void loop(){
                 Serial.print(state->data[x].units);
                 if(x < state->numdata-1){Serial.print(", ");}else{Serial.println();}
             }
+            // ^^ ----------------------------------------------------- ^^
+
         } else if (!_success) {
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
