@@ -92,13 +92,13 @@ void loop(){
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
             Serial.print(" read success: ");
-            for(int x = 0; x < state.numdata; x++){
+            for(int x = 0; x < state->numdata; x++) {
                 Serial.print(state->data[x].data);
                 Serial.print(' ');
                 Serial.print(state->data[x].units);
-                if(x < state.numdata-1){Serial.print(", ");}
+                if(x < state->numdata-1){Serial.print(", ");}
             }
-        } else {
+        } else if (!_success) {
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
             Serial.println(" failed to update!");
