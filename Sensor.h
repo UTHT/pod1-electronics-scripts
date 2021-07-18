@@ -47,8 +47,8 @@ struct t_datasetup {
 // Sensor class - note the difference in exposure and implementation in read/init and getRead/begin
 class Sensor{
   private:
-    uint16_t delta;         //The minimum time (milliseconds) between sensor updates.
-    uint16_t lastread;      //Timestamp of last read ATTEMPT
+    unsigned long delta;         //The minimum time (milliseconds) between sensor updates.
+    unsigned long lastread;      //Timestamp of last read ATTEMPT
   protected:
     // Sensor-specific functionality initialize and read functions - to be implemented by sensor classes
     virtual errorlevel_t init() = 0;                                  //Connect to sensor, calibrate, set data count and units, and update state accordingly
@@ -62,7 +62,7 @@ class Sensor{
     // Wrappers return pointer to updated state
     SensorState* update();  //Calls read(), manages delta, and wraps all t_datum
     SensorState* begin();   //Sets state in accordance with init()
-    Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta);
+    Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, unsigned long delta);
 };
 
 #endif
