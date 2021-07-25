@@ -1,24 +1,52 @@
-/*
- * Code Reference: https://github.com/fdcl-gwu/arduino-vn100/blob/master/read-vn100/read-vn100.ino
- * Reference code modified to fit our desired outputs
+/* Copyright (c) 2021 University of Toronto Hyperloop Team
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  * 
- * Use the Serial Monitor to configure the IMU as follows:
- * $VNASY,0*XX                 // stop async message printing
- * $VNWRG,06,0*XX              // stop ASCII message outputs
- * $VNWRG,75,2,8,01,05C8*XX    // output binary message (see notes for details)
- * $VNCMD*XX                   // enter command mode
- * system save                 // save settings to flash memory
- * exit                        // exit command mode
- * $VNASY,1*XX                 // resume async message printing
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
- * Also make sure to change the line ending setting in the bottom of the Serial Monitor to "Newline"
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
+/* Code References:
+ * 1) Used for sensor setup
+ * https://github.com/dawonn/vectornav/blob/master/src/main.cpp
+ * 2) Used for data reading and sensor binary output conversion
+ * https://github.com/fdcl-gwu/arduino-vn100/blob/master/read-vn100/read-vn100.ino
+ * 
+ *               *** READ BEFORE TESTING ***
+ * This code should allow the arduino to automatically print out sensor values
+ * at regular intervals (configure on line 131).
+ * Please configure the correct communication port on line 108
+ */
+
+// Include this header file to get access to VectorNav sensors.
+#include "VN200_Lib_cpp/include/vn/sensors.h"
+
+// We need this file for our sleep function.
+#include "VN200_Lib_cpp/include/vn/thread.h"
+
+using namespace std;
+using namespace vn::math;
+using namespace vn::sensors;
+using namespace vn::protocol::uart;
+using namespace vn::xplat;
 
 // Function declarations
 void read_imu_data(void);
 void check_sync_byte(void);
 unsigned short calculate_imu_crc(byte data[], unsigned int length);
-
 
 // Union functions for byte to float conversions
 // IMU sends data as bytes, the union functions are used to convert
@@ -72,14 +100,55 @@ void setup() {
 
   // Start Serial1 for IMU communication
   Serial1.begin(115200);
-}
 
+  // Create a VnSensor object and connect to sensor
+  VnSensor vs;
+
+  // Connect sensor to Arduino
+  const string SensorPort = "COM3";                       // ** Adjust as needed **
+  const uint32_t SensorBaudrate = 115200;
+  vs.connect(SensorPort, SensorBaudrate);
+
+  // Check connectivity
+  if(vs.verifySensorConnectivity()) {
+    String mn = vs.readModelNumber();
+    String fv = vs.readFirmwareVersion();
+
+    Serial.println("Sensor connection established");
+    Serial.println("Model Number: " + mn);
+    Serial.println("Firmware Version: " + fv);
+  }
+  else {
+    Serial.println("Sensor connection unsuccessful");
+  }
+
+  // Make sure no generic async output is registered
+  vs.writeAsyncDataOutputType(VNOFF);
+
+  // Sensor Register Configuration
+  BinaryOutputRegister bor(
+  ASYNCMODE_PORT1,             // Async Port 1 is equivalent to Register 75
+  200,                         // IMU Rate: 800(default) / 200 = 4 [Hz]
+  COMMONGROUP_YAWPITCHROLL
+  | COMMONGROUP_ANGULARRATE
+  | COMMONGROUP_POSITION
+  | COMMONGROUP_VELOCITY
+  | COMMONGROUP_ACCEL
+  | COMMONGROUP_MAGPRES,
+  TIMEGROUP_NONE,
+  IMUGROUP_NONE,
+  GPSGROUP_NONE,
+  ATTITUDEGROUP_NONE,
+  INSGROUP_NONE};
+  
+  vs.writeBinaryOutput1(bor);   // Sensor should asynchronously output messages at the indicated IMU rate
+}
 
 void loop() {
   imu_sync_detected = false;
 
   // Check if new IMU data is available
-  if (Serial1.available() > 4) check_sync_byte();
+  if (Serial1.available() > 4) check_sync_byte();  // Every new binary message is at least 4 bytes long
 
   // If sync byte is detected, read the rest of the data
   if (imu_sync_detected) read_imu_data();
@@ -87,6 +156,7 @@ void loop() {
   delay(1);
 }
 
+// ===================================================
 
 // Check for the sync byte (0xFA)
 void check_sync_byte(void) {
