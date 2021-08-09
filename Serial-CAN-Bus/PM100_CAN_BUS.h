@@ -4,7 +4,7 @@
 //types of CAN messages
 typedef enum message_type {
   BROADCAST_M,
-  COMMAND_TOURQUE_M
+  COMMAND_TOURQUE_M,
   COMMAND_SPEED_M
 } message_type;
 
@@ -42,3 +42,5 @@ class command_message{
 
   
 }
+
+#endif
