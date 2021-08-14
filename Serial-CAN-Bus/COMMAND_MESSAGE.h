@@ -1,5 +1,5 @@
-#ifndef PM100_CAN_BUS_H
-#define PM100_CAN_BUS_H
+#ifndef COMMAND_MESSAGE_H
+#define COMMAND_MESSAGE_H
 
 //types of CAN messages
 typedef enum m_type {
