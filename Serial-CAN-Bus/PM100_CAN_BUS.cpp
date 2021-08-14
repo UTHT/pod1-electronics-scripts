@@ -4,15 +4,17 @@
 #include <iostream>
 #include <PM100_CAN_BUS_testing.h>
 //#include <C:\adam\utht\extra low level\PM100_CAN_BUS_testing.h>
+#include <bitset>
 
 using namespace std;
 
 
-int* command_message::send_command_message( message_type command_message, 
-                                       float torque_val, //Value in N.m
-                                       float speed_val,  //RPM
-                                       inverter_direction direction_command, 
-                                       inverter_enable enable_command ){
+//given all inverter parameters, this creates an int array of the CAN message data bytes
+int* command_message::create_command_message ( message_type command_message, 
+                                               float torque_val, //Value in N.m
+                                               float speed_val,  //RPM
+                                               inverter_direction direction_command, 
+                                               inverter_enable enable_command ){
 	
     //All necessary variables for CAN Message (data bytes)
     int inverter_torque_val;
@@ -27,9 +29,17 @@ int* command_message::send_command_message( message_type command_message,
 	    
 	//Calculate the int values for byte 0 & byte 1 (torque data)
 	//PM100 requires (Torque Val * 10) to be sent through CAN
-	inverter_torque_val = int(torque_val * 10);
-	data_low_byte = inverter_torque_val % 256;
-	data_high_byte = inverter_torque_val / 256;
+	if( torque_val > 0 ){
+	    inverter_torque_val = int(torque_val * 10);
+	    data_low_byte = inverter_torque_val % 256;
+	    data_high_byte = inverter_torque_val / 256;
+	}
+	else if( torque_val < 0 ){
+	    inverter_torque_val = int(torque_val * 10);
+	    data_low_byte = ( inverter_torque_val & 255 );
+	    data_high_byte = ( inverter_torque_val & 65280 ) >> 8;
+	}
+	    
 	
 	//Set direction command byte accordingly
 	if( direction_command == REVERSE ){ direction_byte = 0; }
@@ -122,6 +132,24 @@ int main(){
 	inverter_direction test_direction;
 	inverter_enable test_enable = ENABLE; //inverter enable
 	
+	
+	//BITWISE TESTING (ADAM)
+	/*
+	int test_int = 100;
+	int bitwise_not = ~test_int + 1;
+	
+	cout << "test int:    " << test_int << endl;
+	cout << "bitwise NOT: " << bitwise_not << endl;
+	
+	cout << "binary of test int:    " << bitset<16>(test_int) << endl;
+	cout << "binary of bitwise NOT: " << bitset<16>(bitwise_not) << endl;
+	
+	int low_byte = ( bitwise_not & 255 );
+	int high_byte = ( bitwise_not & 65280 ) >> 8;
+	cout << "low byte:              " << low_byte << endl;
+	cout << "high byte:             " << high_byte << endl;
+	*/
+
 	
 	cout << "-----------------------------------------------------------------------------" << endl;
 	cout << "|                  PM100 CAN Bus Message Generator (TESTING)                |" << endl;
