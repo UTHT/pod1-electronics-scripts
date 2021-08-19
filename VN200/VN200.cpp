@@ -50,29 +50,26 @@ union {float f; unsigned char b[4];} pres;
 // Checksum
 union {unsigned short s; unsigned char b[2];} checksum;
 
-VN200::VN200(arduino_t arduino) : Sensor(VN200, arduino, datasetup, 1) {
-    // ***** TODO: Do not know how to set this up ********
-    this->VN200 = ????????????????????????????????????????????;
+VN200::VN200(arduino_t arduino) : Sensor(VN200, arduino, datasetup, 1)
+{
+    this->VN200 = VnSensor();
 }
 
-errorlevel_t VN200::init()
+errorlevel_t VN200::init() // TODO initialize buffer
 {
     Serial1.begin(115200); // Start Serial1 for IMU communication
-
-    // Create a VnSensor object and connect to sensor
-    // ***** TODO: Do not know where to create object ********
-    VnSensor vs;
 
     // Connect sensor to Arduino
     const string SensorPort = "COM3"; // ** Adjust as needed **
     const uint32_t SensorBaudrate = 115200;
-    vs.connect(SensorPort, SensorBaudrate);
+
+    this->VN200.connect(SensorPort, SensorBaudrate);
 
     // Check connectivity
-    if (vs.verifySensorConnectivity())
+    if (this->VN200.verifySensorConnectivity())
     {
-        String mn = vs.readModelNumber();
-        String fv = vs.readFirmwareVersion();
+        String mn = this->VN200.readModelNumber();
+        String fv = this->VN200.readFirmwareVersion();
 
         Serial.println("Sensor connection established");
         Serial.println("Model Number: " + mn);
@@ -85,26 +82,27 @@ errorlevel_t VN200::init()
     }
 
     // Make sure no generic async output is registered
-    vs.writeAsyncDataOutputType(VNOFF);
+    this->VN200.writeAsyncDataOutputType(VNOFF);
 
     // Sensor Register Configuration
 
-    BinaryOutputRegister bor(
-        ASYNCMODE_PORT1, // Async Port 1 is equivalent to Register 75
-        200,             // IMU Rate: 800(default) / 200 = 4 [Hz]
-        COMMONGROUP_YAWPITCHROLL
-        | COMMONGROUP_ANGULARRATE
-        | COMMONGROUP_POSITION
-        | COMMONGROUP_VELOCITY
-        | COMMONGROUP_ACCEL
-        | COMMONGROUP_MAGPRES,
-        TIMEGROUP_NONE,
-        IMUGROUP_NONE,
-        GPSGROUP_NONE,
-        ATTITUDEGROUP_NONE,
-        INSGROUP_NONE);
+	BinaryOutputRegister bor(
+		ASYNCMODE_PORT1, // Async Port 1 is equivalent to Register 75
+		200,             // IMU Rate: 800(default) / 200 = 4 [Hz]
+		COMMONGROUP_YAWPITCHROLL
+		| COMMONGROUP_ANGULARRATE
+		| COMMONGROUP_POSITION
+		| COMMONGROUP_VELOCITY
+		| COMMONGROUP_ACCEL
+		| COMMONGROUP_MAGPRES,
+		TIMEGROUP_NONE,
+		IMUGROUP_NONE,
+		GPSGROUP_NONE,
+		ATTITUDEGROUP_NONE,
+		INSGROUP_NONE);
 
-    vs.writeBinaryOutput1(bor); // Sensor should asynchronously output messages at the indicated IMU rate
+    this->VN200.writeBinaryOutput1(bor); // Sensor should asynchronously output messages at the indicated IMU rate
+
     return ERR_NONE;
 }
 
@@ -201,9 +199,9 @@ errorlevel_t VN200::read(t_datum *data, uint8_t numdata)
     data[3].data = W_x.f;
     data[4].data = W_y.f;
     data[5].data = W_z.f;
-    data[6].data = (float) lati.d;
-    data[7].data = (float) longi.d;
-    data[8].data = (float) alti.d;
+    data[6].data = (float)lati.d;
+    data[7].data = (float)longi.d;
+    data[8].data = (float)alti.d;
     data[9].data = v_x.f;
     data[10].data = v_y.f;
     data[11].data = v_z.f;

@@ -7,16 +7,19 @@
 
 // Parameters
 extern bool imu_sync_detected;
-extern byte in[100];
+extern unsigned char in[100];
 
-class VN200 : public Sensor {
-    public:
-        VN200(arduino_t arduino);
-    private:
-        errorlevel_t read(t_datum* data, uint8_t numdata) override;
-        errorlevel_t init() override;
-        
+class VN200 : public Sensor
+{
+public:
+    VN200(arduino_t arduino);
 
+private:
+    errorlevel_t read(t_datum *data, uint8_t numdata) override;
+    errorlevel_t init() override;
+    void check_sync_byte();
+    unsigned short calculate_imu_crc(unsigned char data[], unsigned int length);
+    void read_imu_data();
 }
 
 #endif
