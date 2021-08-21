@@ -2,8 +2,8 @@
 //#include <SoftwareSerial.h>
 //#include <Arduino.h>
 #include <iostream>
-//#include <BROADCAST_FAULTS.h>
-#include <C:\adam\utht\extra low level\BROADCAST_FAULTS.h>
+#include <BROADCAST_FAULTS.h>
+//#include <C:\adam\utht\extra low level\BROADCAST_FAULTS.h>
 #include <bitset>
 #include <vector>
 
@@ -93,12 +93,13 @@ PM100_FAULT_CODE FAULT_CODE_ARRAY[65] = {
 
 std::ostream& operator<<(std::ostream& lhs, PM100_FAULT_CODE fault) {
 	
-    switch(fault) {
-	    case Hardware_Gate_Desaturation_Fault: lhs << "Hardware_Gate_Desaturation_Fault"; break;
-	    case HW_Over_current_Fault: lhs << "HW_Over_current_Fault"; break;
-	    case Accelerator_Shorted: lhs << "Accelerator_Shorted"; break;
-	    case Accelerator_Open: lhs << "Accelerator_Open"; break;
-	    case Current_Sensor_Low: lhs << "Current_Sensor_Low"; break;
+	switch(fault) {
+        
+		case Hardware_Gate_Desaturation_Fault: lhs << "Hardware_Gate_Desaturation_Fault"; break;
+		case HW_Over_current_Fault: lhs << "HW_Over_current_Fault"; break;
+		case Accelerator_Shorted: lhs << "Accelerator_Shorted"; break;
+		case Accelerator_Open: lhs << "Accelerator_Open"; break;
+		case Current_Sensor_Low: lhs << "Current_Sensor_Low"; break;
 		case Current_Sensor_High: lhs << "Current_Sensor_High"; break;
 		case Module_Temperature_Low: lhs << "Module_Temperature_Low"; break;
 		case Module_Temperature_High: lhs << "Module_Temperature_High"; break;
@@ -124,10 +125,10 @@ std::ostream& operator<<(std::ostream& lhs, PM100_FAULT_CODE fault) {
 		case RESERVED_1: lhs << "RESERVED_1"; break;
 		case RESERVED_2: lhs << "RESERVED_2"; break;
 		case RESERVED_3: lhs << "RESERVED_3"; break;
-	    case Brake_Shorted: lhs << "Brake_Shorted"; break;
-	    case Brake_Open: lhs << "Brake_Open"; break;
-	    case Motor_Over_speed_Fault: lhs << "Motor_Over_speed_Fault"; break;
-	    case Over_current_Fault: lhs << "Over_current_Fault"; break;
+		case Brake_Shorted: lhs << "Brake_Shorted"; break;
+		case Brake_Open: lhs << "Brake_Open"; break;
+		case Motor_Over_speed_Fault: lhs << "Motor_Over_speed_Fault"; break;
+		case Over_current_Fault: lhs << "Over_current_Fault"; break;
 		case Over_voltage_Fault: lhs << "Over_voltage_Fault"; break;
 		case Inverter_Over_temperature_Fault: lhs << "Inverter_Over_temperature_Fault"; break;
 		case Accelerator_Input_Shorted_Fault: lhs << "Accelerator_Input_Shorted_Fault"; break;
@@ -159,12 +160,9 @@ std::ostream& operator<<(std::ostream& lhs, PM100_FAULT_CODE fault) {
 		case Resolver_Not_Connected: lhs << "Resolver_Not_Connected"; break;
 		case Inverter_Discharge_Active: lhs << "Inverter_Discharge_Active"; break;
 		case NOT_FAULT_CAN_MSSG: lhs << "ERROR - This CAN Message is NOT for FAULT CODES!"; break;
-		
-	
 	}
     
-    return lhs;
-    
+	return lhs;
 }
 
 
@@ -172,72 +170,53 @@ int return_fault_index_val( PM100_FAULT_CODE fault ){
 	
 	int index_value = fault;
 	return index_value;
-	
 }
 
  
  
 std::vector<PM100_FAULT_CODE> broadcast_message::read_fault_codes_VER_2( int CAN_mssg[9] ){
 
+    	//extract the CAN ID & define return vector of fault codes
 	int CAN_ID = CAN_mssg[0];
 	vector<PM100_FAULT_CODE> faults_found;
-	PM100_FAULT_CODE byte_0_fault;
+	PM100_FAULT_CODE fault;
 	
+    	//check if CAN message is FAULT message
 	if( CAN_ID != 0x0AB ){
-		//return an error code for this case, make it up
 		cout << NOT_FAULT_CAN_MSSG;
 		faults_found.push_back( NOT_FAULT_CAN_MSSG );
-		
 	}
 	else if( CAN_ID == 0x0AB ){
-		//confirmed that this CAN Message is for Fault Codes
 		
-		int fault_code_index = 0;
+		int fault_code_index = 0; //var used for indexing fault code array
+
+        	//here we'll loop 8 times, analyze each CAN data byte
 		for( int i = 1; i < 9; i++  ){
 			
 			int byte_i = CAN_mssg[i];
 			cout << "Byte " << i << " Faults: " << endl;
-			
-			switch(byte_i){
-			case 0: //NO FAULTS IN THIS BYTE
-				cout << "    No FAULTS found in Byte " << i << endl;
-				fault_code_index = fault_code_index + 8;
-				continue;
-			case 1: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index ];
-				break;
-			case 2: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 1 ];
-				break;
-			case 4: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 2 ]; 
-				break;
-			case 8: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 3 ]; 
-				break;
-			case 16: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 4 ]; 
-				break;
-			case 32: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 5 ]; 
-				break;
-			case 64: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 6 ]; 
-				break;
-			case 128: 
-				byte_0_fault = FAULT_CODE_ARRAY[ fault_code_index + 7 ]; 
-				break;
-			}
-			fault_code_index = fault_code_index + 8;
-			
-			cout << "    " << byte_0_fault << " -- Fault #" << return_fault_index_val(byte_0_fault) << endl;
-			faults_found.push_back( byte_0_fault );
+
+			//vars to check each bit of current byte
+			int current_bit;
+			int int_to_binary = byte_i;
+			for( int i = 0; i < 8; i++ ){
+
+				current_bit = int_to_binary % 2;
+				int_to_binary = int_to_binary / 2;
+                
+				if( current_bit ){
+				    fault = FAULT_CODE_ARRAY[ fault_code_index + i ];
+				    cout << "    " << fault << " -- Fault #" << return_fault_index_val( fault ) << endl;
+						faults_found.push_back( fault );
+				}
+            		}
+
+            		fault_code_index = fault_code_index + 8;
 		}
 		
-		
 	}
-	return faults_found;
 
+	return faults_found;
 }
 
 
@@ -264,7 +243,7 @@ int main(){
 	cout << "<                  The CAN message we're testing is:                  >" << endl;
 	
 	broadcast_message testing_class;
-    int test_message_2[9] = { 0x0AB, 128, 32, 0, 0, 0, 0, 2, 0 };
+    	int test_message_2[9] = { 0x0AB, 128, 32, 0, 0, 0, 0, 2, 0 };
 	
 	cout << "<                  {";
 	for ( int i = 0; i < 8; i++ ){
@@ -280,8 +259,8 @@ int main(){
 	
 	
    
-    vector<PM100_FAULT_CODE> returned_faults_vector;
-    returned_faults_vector = testing_class.read_fault_codes_VER_2( test_message_2 );
+	vector<PM100_FAULT_CODE> returned_faults_vector;
+	returned_faults_vector = testing_class.read_fault_codes_VER_2( test_message_2 );
    
    
    
