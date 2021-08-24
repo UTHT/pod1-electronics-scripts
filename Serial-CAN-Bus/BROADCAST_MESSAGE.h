@@ -1,7 +1,8 @@
 #ifndef BROADCAST_MESSAGE_H
 #define BROADCAST_MESSAGE_H
 
-#include "PM100_CAN_BUS.h"
+//#include <C:\adam\utht\extra low level\COMMAND_MESSAGE.h>
+#include <COMMAND_MESSAGE.h>
 
 // Reference 0x0AA - Internal States, Byte #0,1
 typedef enum vsm_state
@@ -15,7 +16,8 @@ typedef enum vsm_state
     MOTOR_RUNNING,
     BLINK_FAULT_CODE,
     SHUTDOWN_IN_PROGRESS = 14,
-    RECYCLE_POWER
+    RECYCLE_POWER,
+    NOT_A_VSM_STATE
 } vsm_state;
 
 // Reference 0x0AA - Internal States, Byte #2
@@ -27,7 +29,8 @@ typedef enum inverter_state
     CLOSED_LOOP,
     WAIT,
     IDLE_RUN = 8,
-    IDLE_STOP
+    IDLE_STOP,
+    NOT_AN_INVERTER_STATE = 13
 } inverter_state;
 
 // Reference Param Address 148
@@ -70,13 +73,21 @@ typedef enum can_active_messages_hi_word
     CAN_COMMAND_MESSAGE
 } can_active_messages_hi_word;
 
-class broadcast_message
-{
-public:
-    message_type broadcast_message;
-    void print_vsm_state(int message_arr[9]);
-    void print_inverter_state(int message_arr[9]);
-    void disable_broadcast_message(unsigned char (&CAN_mssg)[9], can_active_messages_lo_word content);
+class broadcast_message{
+    
+    public:
+    
+        message_type broadcast_message;
+    
+        vsm_state read_vsm_state( int message_arr[9] );
+        friend std::ostream& operator<<( std::ostream& lhs, vsm_state state );
+        friend int return_vsm_state_val( vsm_state state );
+    
+        inverter_state read_inverter_state( int message_arr[9] );
+        friend std::ostream& operator<<( std::ostream& lhs, inverter_state state );
+        friend int return_inverter_state_val( inverter_state state );
+    
+        void disable_broadcast_message(unsigned char (&CAN_mssg)[9], can_active_messages_lo_word content);
 }
 
 #endif
