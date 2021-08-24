@@ -37,23 +37,23 @@ typedef enum inverter_state
 typedef enum can_active_messages_lo_word
 {
     // Data Byte 4
-    TEMPERATURE_1,
-    TEMPERATURE_2,
-    TEMPERATURE_3,
-    ANALOG_INPUT_VOLTAGES,
-    DIGITAL_INPUT_STATUS,
-    MOTOR_POSITION_INFORMATION,
-    CURRENT_INFORMATION,
-    VOLTAGE_INFORMATION,
+    TEMPERATURE_1 = 0x0001,
+    TEMPERATURE_2 = 0x0002,
+    TEMPERATURE_3 = 0x0004,
+    ANALOG_INPUT_VOLTAGES = 0x0008,
+    DIGITAL_INPUT_STATUS = 0x0010,
+    MOTOR_POSITION_INFORMATION = 0x0020,
+    CURRENT_INFORMATION = 0x0040,
+    VOLTAGE_INFORMATION = 0x0080,
     // Data Byte 5
-    FLUX_INFORMATION,
-    INTERNAL_VOLTAGES,
-    INTERNAL_STATES,
-    FAULT_CODES,
-    TORQUE_AND_TIMER_INFORMATION,
-    MODULATION_INDEX_AND_FLUX_WEAKENING_OUTPUT_INFORMATION,
-    FIRMWARE_INFORMATION,
-    DIAG_DATA
+    FLUX_INFORMATION = 0x0100,
+    INTERNAL_VOLTAGES = 0x0200,
+    INTERNAL_STATES = 0x0400,
+    FAULT_CODES = 0x0800,
+    TORQUE_AND_TIMER_INFORMATION = 0x1000,
+    MOD_INDEX_FLUX_WEAKENING_OUTPUT_INFO = 0x2000,
+    FIRMWARE_INFORMATION = 0x4000,
+    DIAG_DATA = 0x8000
 } can_active_messages_lo_word;
 
 // Reference Param Address 148, should always be enabled (default)
@@ -73,21 +73,20 @@ typedef enum can_active_messages_hi_word
     CAN_COMMAND_MESSAGE
 } can_active_messages_hi_word;
 
-class broadcast_message{
-    
-    public:
-    
-        message_type broadcast_message;
-    
-        vsm_state read_vsm_state( int message_arr[9] );
-        friend std::ostream& operator<<( std::ostream& lhs, vsm_state state );
-        friend int return_vsm_state_val( vsm_state state );
-    
-        inverter_state read_inverter_state( int message_arr[9] );
-        friend std::ostream& operator<<( std::ostream& lhs, inverter_state state );
-        friend int return_inverter_state_val( inverter_state state );
-    
-        void disable_broadcast_message(unsigned char (&CAN_mssg)[9], can_active_messages_lo_word content);
-}
+class broadcast_message
+{
+public:
+    message_type broadcast_message;
+
+    vsm_state read_vsm_state(int message_arr[9]);
+    friend std::ostream &operator<<(std::ostream &lhs, vsm_state state);
+    friend int return_vsm_state_val(vsm_state state);
+
+    inverter_state read_inverter_state(int message_arr[9]);
+    friend std::ostream &operator<<(std::ostream &lhs, inverter_state state);
+    friend int return_inverter_state_val(inverter_state state);
+
+    void disable_broadcast_message(int CAN_mssg[9], int listOfMsgs);
+};
 
 #endif

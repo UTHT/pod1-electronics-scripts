@@ -41,6 +41,6 @@ class command_message{
 
 
   
-}
+};
 
 #endif
