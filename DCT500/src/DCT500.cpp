@@ -33,11 +33,13 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     const double resistor = 200;
 
      // This is only for Arduino Mega with 200 ohm 
-    double calculated_current = dct500_map(analogRead(pin), 160, 819, 0, 500); 
+    //double calculated_current = dct500_map(analogRead(pin), 160, 819, 0, 500); 
     // This is only for Arduino Mega with 300 ohm (bc 1023 rep. 3.3V instead of 5, and we will ever reach that high of a current)
     // double calculated_current = dct500_map(analogRead(pin), 160, 1860, 0, 500);  
     
-    data[0].data = (float)calculated_current;
+    data[0].data = (float)analogRead(pin);
+    
+    //data[0].data = (float)calculated_current;
     // TODO: other error conditions?
     return ERR_NONE;
 }
