@@ -30,7 +30,7 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     */
    
     // Calibrate from analogRead to 500A 
-    const double resistor = 200;
+    const double resistor = 330;
 
      // This is only for Arduino Mega with 200 ohm 
     //double calculated_current = dct500_map(analogRead(pin), 160, 819, 0, 500); 
