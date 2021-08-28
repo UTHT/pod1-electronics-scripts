@@ -1,4 +1,5 @@
 #include "VN200.h"
+#include "Sensor.h"
 
 using namespace std;
 using namespace vn::math;
@@ -6,53 +7,42 @@ using namespace vn::sensors;
 using namespace vn::protocol::uart;
 using namespace vn::xplat;
 
-const char *arr[20] = {"deg [Yaw]", "deg [Pitch]", "deg [Roll]", "rad/sec [X]", "rad/sec [Y]", "rad/sec [Z]",
-                       "deg [Lati]", "deg [Longi]", "deg [Alti]", "m/sec [X]", "m/sec [Y]", "m/sec [Z]",
-                       "m/s^2 [X]", "m/s^2 [Y]", "m/s^2 [Z]", "Gauss [X]", "Gauss [Y]", "Gauss [Z]",
-                       "C [Temp]", "kPa"};
+const char* arr[20] = {"deg [Yaw]",    "deg [Pitch]",  "deg [Roll]", 
+                        "rad/sec [X]",  "rad/sec [Y]",  "rad/sec [Z]",
+                        "deg [Lati]",   "deg [Longi]",  "deg [Alti]", 
+                        "m/sec [X]",    "m/sec [Y]",    "m/sec [Z]",
+                        "m/s^2 [X]",    "m/s^2 [Y]",    "m/s^2 [Z]", 
+                        "Gauss [X]",    "Gauss [Y]",    "Gauss [Z]",
+                        "C [Temp]",     "kPa"};
 t_datasetup datasetup = {20, arr};
 
 bool imu_sync_detected = false;
 unsigned char in[100]; // byte array
 
-// YawPitchRoll (Attitude)  -> Binary Group 1, Bit Offset 3
-union {float f; unsigned char b[4];} yaw;
-union {float f; unsigned char b[4];} pitch;
-union {float f; unsigned char b[4];} roll;
 
-// AngularRate              -> Binary Group 1, Bit Offset 5
-union {float f; unsigned char b[4];} W_x;
-union {float f; unsigned char b[4];} W_y;
-union {float f; unsigned char b[4];} W_z;
+typedef union { unsigned short s; unsigned char b[2]; } VNChecksum;
+typedef union { float f; unsigned char b[4]; } VNData;
+typedef union { double d; unsigned char b[8]; } VNBigData;
 
-// Position                 -> Binary Group 1, Bit Offset 6
-union {double d; unsigned char b[8];} lati;
-union {double d; unsigned char b[8];} longi;
-union {double d; unsigned char b[8];} alti;
+VNData yaw, pitch, roll;    // YawPitchRoll (Attitude)  -> Binary Group 1, Bit Offset 3
 
-// Velocity                 -> Binary Group 1, Bit Offset 7
-union {float f; unsigned char b[4];} v_x;
-union {float f; unsigned char b[4];} v_y;
-union {float f; unsigned char b[4];} v_z;
+VNData W_x, W_y, W_z;       // AngularRate              -> Binary Group 1, Bit Offset 5
 
-// Acceleration             -> Binary Group 1, Bit Offset 8
-union {float f; unsigned char b[4];} a_x;
-union {float f; unsigned char b[4];} a_y;
-union {float f; unsigned char b[4];} a_z;
+VNBigData lati, longi, alti;// AngularRate              -> Binary Group 1, Bit Offset 5
 
-// MagPres (Mag,Temp,Pres)  -> Binary Group 1, Bit Offset 10
-union {float f; unsigned char b[4];} m_x;
-union {float f; unsigned char b[4];} m_y;
-union {float f; unsigned char b[4];} m_z;
-union {float f; unsigned char b[4];} temp;
-union {float f; unsigned char b[4];} pres;
+VNData v_x, v_y, v_z;       // Velocity                 -> Binary Group 1, Bit Offset 7
+
+VNData a_x, a_y, a_z;       // Acceleration             -> Binary Group 1, Bit Offset 8
+
+VNData m_x, m_y, m_z;       // Magnetic field           -> Binary Group 1, Bit Offset 10
+VNData temp, pres;          // Temperature and pressure (same offset)
 
 // Checksum
-union {unsigned short s; unsigned char b[2];} checksum;
+VNChecksum checksum;
 
-VN200::VN200(arduino_t arduino) : Sensor(VN200, arduino, datasetup, 1)
+VN200::VN200(arduino_t arduino) : Sensor(S_VN200, arduino, datasetup, 250)
 {
-    this->VN200 = VnSensor();
+    this->VNSensor = VnSensor();
 }
 
 errorlevel_t VN200::init() // TODO initialize buffer
@@ -63,26 +53,29 @@ errorlevel_t VN200::init() // TODO initialize buffer
     const string SensorPort = "COM3"; // ** Adjust as needed **
     const uint32_t SensorBaudrate = 115200;
 
-    this->VN200.connect(SensorPort, SensorBaudrate);
+    VNSensor.connect(SensorPort, SensorBaudrate);
 
     // Check connectivity
-    if (this->VN200.verifySensorConnectivity())
+    if (VNSensor.verifySensorConnectivity())
     {
-        String mn = this->VN200.readModelNumber();
-        String fv = this->VN200.readFirmwareVersion();
-
-        Serial.println("Sensor connection established");
-        Serial.println("Model Number: " + mn);
-        Serial.println("Firmware Version: " + fv);
+        #if DEBUG
+            String mn = VNSensor.readModelNumber();
+            String fv = VNSensor.readFirmwareVersion();
+            Serial.println("Sensor connection established");
+            Serial.println("Model Number: " + mn);
+            Serial.println("Firmware Version: " + fv);
+        #endif
     }
     else
     {
-        Serial.println("Sensor connection unsuccessful");
+        #if DEBUG
+            Serial.println("Sensor connection unsuccessful");
+        #endif
         return ERR_FAIL;
     }
 
     // Make sure no generic async output is registered
-    this->VN200.writeAsyncDataOutputType(VNOFF);
+    VNSensor.writeAsyncDataOutputType(VNOFF);
 
     // Sensor Register Configuration
 
@@ -101,7 +94,7 @@ errorlevel_t VN200::init() // TODO initialize buffer
 		ATTITUDEGROUP_NONE,
 		INSGROUP_NONE);
 
-    this->VN200.writeBinaryOutput1(bor); // Sensor should asynchronously output messages at the indicated IMU rate
+    VNSensor.writeBinaryOutput1(bor); // Sensor should asynchronously output messages at the indicated IMU rate
 
     return ERR_NONE;
 }
@@ -161,7 +154,7 @@ void read_imu_data()
             longi.b[i + 4] = in[40 + i];
             alti.b[i] = in[44 + i];
             alti.b[i + 4] = in[48 + i];
-            v_x.b[i] = in[52 + i]; // Velcoty
+            v_x.b[i] = in[52 + i]; // Velocity
             v_y.b[i] = in[56 + i];
             v_z.b[i] = in[60 + i];
             a_x.b[i] = in[64 + i]; // Acceleration
@@ -182,16 +175,19 @@ errorlevel_t VN200::read(t_datum *data, uint8_t numdata)
 {
     imu_sync_detected = false;
 
-    if (numdata != 20)
+    if (numdata != 20) {
         return ERR_FAIL;
+    }
 
     // Check if new IMU data is available
-    if (Serial1.available() > 4)
+    if (Serial1.available() > 4) {
         check_sync_byte(); // Every new binary message is at least 4 bytes long
+    }
 
     // If sync byte is detected, read the rest of the data
-    if (imu_sync_detected)
+    if (imu_sync_detected) {
         read_imu_data();
+    }
 
     data[0].data = yaw.f;
     data[1].data = pitch.f;
