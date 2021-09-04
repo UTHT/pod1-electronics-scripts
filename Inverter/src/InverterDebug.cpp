@@ -115,7 +115,7 @@ int64_t read_fault_codes(int CAN_msg[9]) {
                 int_to_binary = int_to_binary / 2;
 
                 if( current_bit ){
-                    faults |= 1UL << (fault_byte*8 + i);
+                    faults |= 1ULL << (fault_byte*8 + i);
                 }
             }
 
