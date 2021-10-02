@@ -3,6 +3,8 @@
 
 #include "Sensor.h"
 
+#define MIN_DISTANCE_VOLTAGE 0.1
+
 class OPT2002 : public Sensor {
     public:
         OPT2002(uint8_t inpin, uint8_t errpin, arduino_t arduino);
