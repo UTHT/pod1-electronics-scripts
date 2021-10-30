@@ -1,7 +1,7 @@
 #include "DCT500.h"
 
-const char* arr[1] = {"A"};
-t_datasetup datasetup = {1, arr};
+const char* arr[2] = {"A", "Raw"};
+t_datasetup datasetup = {2, arr};
 
 DCT500::DCT500(uint8_t pin, arduino_t arduino) : Sensor(S_DCT500, arduino, datasetup, 250){
     this->pin = pin;
@@ -28,6 +28,7 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
     double calculated_current = dct500_map(analogRaw, 204, 1024, 0, 500); 
     
     data[0].data = (float)calculated_current;
+    data[1].data = analogRaw;
     // TODO: other error conditions?
     return ERR_NONE;
 }
