@@ -9,7 +9,11 @@
  * @param setup - t_datasetup - How many datasets are there? What are their units?
  * @param delta - uint16_t - The minimum time (in ms) between sensor read attempts.
  **/
+<<<<<<< HEAD:DCT500/src/Sensor.cpp
 Sensor::Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta){
+=======
+Sensor::Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, unsigned long delta){
+>>>>>>> staging:OPT2002/src/Sensor.cpp
     // Set up cache
     this->sensor = sensor;
     this->arduino = arduino;
@@ -59,7 +63,7 @@ SensorState* Sensor::update(){
 
             switch(state.error){
                 case ERR_NONE:  //Success!
-                    state.debug = DS_NEWREAD;
+                    state.debug = DS_SUCCESS;
                     state.timestamp = lastread;
                     free(state.data);
                     state.data = buffer;

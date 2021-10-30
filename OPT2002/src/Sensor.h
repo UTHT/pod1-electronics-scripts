@@ -1,8 +1,7 @@
 #ifndef Sensor_H
 #define Sensor_H
 
-#include "Arduino.h"
-#include "stdlib.h"
+#include "Base.h"
 
 // Sensor identifiers
 typedef enum sensors_t {
@@ -16,43 +15,6 @@ typedef enum sensors_t {
   S_SPTD25_20_0200A,
   S_CANBUS
 } sensors_t;
-
-// Arduino identifiers
-typedef enum arduino_t {
-  ARDUINO_ONE,
-  ARDUINO_TWO,
-  ARDUINO_THREE
-} arduino_t;
-
-// Degree of error occurred
-// TODO: Maybe add more specific codes? (i.e. hardware/wiring fail, comms/protocol fail, etc.)
-typedef enum errorlevel_t {
-  ERR_NONE,
-  ERR_WARN,
-  ERR_FAIL  //NOTE: Implies debug level 'DISABLED'
-} errorlevel_t;
-
-// General state - On fail != 0, what state did it last complete successfully?
-typedef enum debuglevel_t {
-  //NOTE: The various debug states imply the value of cache.state.data as follows:
-  DS_DISABLED,     //NULL
-  DS_INIT,         //NULL
-  // DS_CALIBRATING,  //NULL if first time, otherwise unknown
-  DS_WAITING,      //NOT NULL, age > 0
-  DS_NEWREAD          //NOT NULL, age == 0
-} debuglevel_t;
-
-// Unimplemented for now...
-// typedef struct SensorError {
-//   errorlevel_t error,
-//   char* msg,
-//   uint8_t msglen
-// } SensorError;
-// typedef struct SensorDebug {
-//   debuglevel_t debug,
-//   char* msg,
-//   uint8_t msglen
-// } SensorError;
 
 // Single datapoint
 typedef struct t_datum {
@@ -85,8 +47,8 @@ struct t_datasetup {
 // Sensor class - note the difference in exposure and implementation in read/init and getRead/begin
 class Sensor{
   private:
-    uint16_t delta;         //The minimum time (milliseconds) between sensor updates.
-    uint16_t lastread;      //Timestamp of last read ATTEMPT
+    unsigned long delta;         //The minimum time (milliseconds) between sensor updates.
+    unsigned long lastread;      //Timestamp of last read ATTEMPT
   protected:
     // Sensor-specific functionality initialize and read functions - to be implemented by sensor classes
     virtual errorlevel_t init() = 0;                                  //Connect to sensor, calibrate, set data count and units, and update state accordingly
@@ -100,7 +62,7 @@ class Sensor{
     // Wrappers return pointer to updated state
     SensorState* update();  //Calls read(), manages delta, and wraps all t_datum
     SensorState* begin();   //Sets state in accordance with init()
-    Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, uint16_t delta);
+    Sensor(sensors_t sensor, arduino_t arduino, t_datasetup setup, unsigned long delta);
 };
 
 #endif
