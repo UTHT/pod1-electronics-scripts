@@ -61,6 +61,7 @@ void loop(){
                     Serial.print(state->data[x].units);
                     if(x < state->numdata-1){Serial.print(", ");}else{Serial.println();}
                 }
+                Serial.println();
             }
         } else {
             Serial.print("Sensor ");
