@@ -1,15 +1,6 @@
 // Headers for each sensor type
 #include "YourSensorClass.h" 
 //...
-<<<<<<< HEAD
-
-#include "Sensor.h"
-#define NUMSENSORS 1 //Or however many
-#define BAUDRATE 115200
-
-// Objects for each sensor
-SensorClass sensor(/*Arguments, arduino enum*/); 
-=======
 #include "YourActuatorClass.h"
 
 #include "Base.h"
@@ -24,7 +15,6 @@ SensorClass sensor(/*Arguments, arduino enum*/);
 SensorClass sensor(/*Arguments, ...*/, THISARDUINO); 
 //...
 ActuatorClass actuator(/*Arguments, arduino enum*/, THISARDUINO); 
->>>>>>> staging
 //...
 
 Sensor* sensors[NUMSENSORS] = {
@@ -33,15 +23,11 @@ Sensor* sensors[NUMSENSORS] = {
     //...
 };
 
-<<<<<<< HEAD
-=======
 Actuator* actuators[NUMACTUATORS] = {
     // Entry for each sensor object
     &actuator, 
     //...
 };
-
->>>>>>> staging
 // !#!#!#!--- EVERYTHING AFTER HERE DOES NOT NEED TO BE CHANGED FOR SENSOR IMPLEMENTATION ---!#!#!#!
 
 void setup(){
@@ -63,10 +49,6 @@ void setup(){
         }
         success &= _success;
     }
-<<<<<<< HEAD
-    if(!success){
-        Serial.println("POST failed on one or more sensors, freezing...");
-=======
     for(int i = 0; i < NUMACTUATORS; i++){
         ActuatorState* state = actuators[i]->begin();
         // Print/send sensor post-setup state data here. For example:
@@ -95,7 +77,6 @@ void setup(){
     }
     if(!success){
         Serial.println("POST failed on one or more devices, freezing...");
->>>>>>> staging
         while(1){delay(1000);}
     }
 }
@@ -105,20 +86,6 @@ void loop(){
         SensorState* state = sensors[i]->update();
         // Print/send sensor post-setup state data here. For example:
         bool _success = (state->error == ERR_NONE);
-<<<<<<< HEAD
-        bool _new = (state->debug == DS_NEWREAD);
-        if(_success && _new){
-            Serial.print("Sensor ");
-            Serial.print(sensors[i]->sensor);
-            Serial.print(" read success: ");
-            for(int x = 0; x < state.numdata; x++){
-                Serial.print(state->data[x].data);
-                Serial.print(' ');
-                Serial.print(state->data[x].units);
-                if(x < state.numdata-1){Serial.print(", ");}
-            }
-        } else {
-=======
         bool _new = (state->debug == DS_SUCCESS);
         if(_success && _new) {
             Serial.print("Sensor ");
@@ -130,16 +97,14 @@ void loop(){
                 Serial.print(state->data[x].units);
                 if(x < state->numdata-1){Serial.print(", ");}
             }
+            Serial.println();
         } else if (!_success) {
->>>>>>> staging
             Serial.print("Sensor ");
             Serial.print(sensors[i]->sensor);
             Serial.println(" failed to update!");
             // TODO: Recover failed sensor?
         }
     }
-<<<<<<< HEAD
-=======
     for(int i = 0; i < NUMACTUATORS; i++){
         ActuatorState* state = actuators[i]->update();
 
@@ -156,5 +121,4 @@ void loop(){
             // TODO: Recover failed sensor?
         }
     }
->>>>>>> staging
 }
