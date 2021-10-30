@@ -23,19 +23,9 @@ errorlevel_t DCT500::read(t_datum* data, uint8_t numdata){
       return ERR_FAIL;
     }
 
-    /*
-    For Arduino Due use a 300 ohm resistor, 10V input read as 3.3V at the Arduino
-    For Arduino Mega use a 200 ohm resistors, 10V input read as 5.0V at the Arduino
-    The Sensor output 4-20mA. 
-    */
-   
-    // Calibrate from analogRead to 500A 
-    const double resistor = 200;
-
-     // This is only for Arduino Mega with 200 ohm 
-    double calculated_current = dct500_map(analogRead(pin), 160, 819, 0, 500); 
-    // This is only for Arduino Mega with 300 ohm (bc 1023 rep. 3.3V instead of 5, and we will ever reach that high of a current)
-    // double calculated_current = dct500_map(analogRead(pin), 160, 1860, 0, 500);  
+    uint32_t analogRaw = analogRead(pin);
+    // 165ohm output load at 4mA "zero read" output current = 0.66V or 20% of 3.3V -> Due reads 204
+    double calculated_current = dct500_map(analogRaw, 204, 1024, 0, 500); 
     
     data[0].data = (float)calculated_current;
     // TODO: other error conditions?
