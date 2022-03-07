@@ -3,6 +3,8 @@
 //...
 #include "YourActuatorClass.h"
 
+#include <avr/wdt.h>
+
 #include "Base.h"
 #include "Sensor.h"
 #include "Actuator.h"
@@ -80,6 +82,7 @@ void setup(){
         Serial.println("POST failed on one or more devices, freezing...");
         while(1){delay(1000);}
     }
+    wdt_enable(WDTO_1S);
 }
 
 void loop(){
@@ -104,6 +107,7 @@ void loop(){
             Serial.println(" failed to update!");
             // TODO: Recover failed sensor?
         }
+        wdt_reset();
     }
     for(int i = 0; i < NUMACTUATORS; i++){
         ActuatorState* state = actuators[i]->update();
@@ -120,5 +124,6 @@ void loop(){
             Serial.println(" failed to set!");
             // TODO: Recover failed sensor?
         }
+        wdt_reset();
     }
 }
