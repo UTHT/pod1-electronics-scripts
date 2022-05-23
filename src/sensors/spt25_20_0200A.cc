@@ -6,7 +6,11 @@
 #include <sensors/sensor.h>
 
 // Data setup
-static const char* labels[2] = { "kPa (Raw)", "kPa" };
+static const char* labels[2] = { 
+  "psig (Raw)", 
+  "psig" 
+};
+
 static const SensorDataSetup datasetup = {
   .numdata = 2,
   .labels = labels

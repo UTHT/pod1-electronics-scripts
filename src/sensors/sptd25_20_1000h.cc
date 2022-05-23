@@ -7,8 +7,8 @@
 
 // Data setup
 static const char* labels[2] = { 
-  "kPa (Raw)", 
-  "kPa" 
+  "psig (Raw)", 
+  "psig" 
 };
 
 static const SensorDataSetup datasetup = {

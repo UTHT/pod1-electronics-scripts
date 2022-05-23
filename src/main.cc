@@ -4,13 +4,10 @@
   #include <main_pcb1.h>
 #endif
 #if PCB == 2
-  #include <main_pcb1.h>
+  #include <main_pcb2.h>
 #endif
 #if PCB == 3
-  #include <main_pcb1.h>
-#endif
-#ifndef UTHT_MAIN_H_
-  #include <main.h>
+  #include <main_pcb3.h>
 #endif
 
 #include <Arduino.h>
