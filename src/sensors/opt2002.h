@@ -16,9 +16,8 @@ class OPT2002 : public Sensor {
     /**
      * Constructor.
      * @param pin Analog input pin.
-     * @param errpin Error digital input pin.
      */
-    OPT2002(uint8_t pin, uint8_t errpin);
+    OPT2002(uint8_t pin);
   private:
     errorlevel_t initialize(void) override;
 
@@ -26,9 +25,6 @@ class OPT2002 : public Sensor {
 
     // Analog input pin.
     uint8_t pin;
-
-    // Error digital input pin
-    uint8_t errpin;
 };
 
 #endif

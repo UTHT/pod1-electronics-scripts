@@ -12,14 +12,12 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-OPT2002::OPT2002(uint8_t pin, uint8_t errpin) : Sensor(SENSOR_OPT2002, &datasetup, OPT2002_DELTA){
+OPT2002::OPT2002(uint8_t pin) : Sensor(SENSOR_OPT2002, &datasetup, OPT2002_DELTA){
     this->pin = pin;
-    this->errpin = errpin;
 }
 
 errorlevel_t OPT2002::initialize(void) {
-    pinMode(pin, INPUT);
-    pinMode(errpin, INPUT_PULLUP);      // To use the internal resistor in the arduino
+    pinMode(pin, INPUT);     // To use the internal resistor in the arduino
     return ERR_NONE;
 }
 
