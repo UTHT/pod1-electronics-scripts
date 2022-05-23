@@ -1,45 +1,63 @@
-# Electronics Scripts
+# UTHT Electronics Scripts
 
 Libraries and test sketches for the various electronics (sensors, etc.).
 
+# Sensors
 
-# Development
+## SPTD25-20-1000H
 
-> New to Git? Watch [this tutorial](https://youtu.be/h8c2dznNWL8) first.
+Monitors the pressure of the braking exhaust valves, alerting the team in case of any irregularity. 
 
-> Never heard of "SemVer"? Look [here](https://semver.org/).
+Outputs: Pressure (psig), range: 0 to 1000 psig
 
-## Repo Structure
+## SPT25-20-0200A
 
-Refer to the `examplesensor/` folder.
+Monitors the pressure of the braking exhaust valves, alerting the team in case of any irregularity. 
 
-Folders will exist, each containing: 
-- An Arduino "test sketch" named after the sensor (i.e. "`VN200.ino`"), used to test the sensor *individually*;
-- The library ("`VN200.cpp`" & "`VN200.h`") that can be imported by the "main" Arduino sketch*;
-- Any dependancy libraries will be nested inside a sub-folder named "libraries". 
+Outputs: Pressure (psi), range: 0 to 200 psi
 
-> \*It can be expected that the test sketch will precede the library in development, and will initially contain the library code (how to access the sensor's data) along with testing procedure (executing those access/communication functions).
+## RTD
 
-In addition, a `README.md` Markdown document will accompany each sensor's sketch, detailing:
+Measures the temperatures near a) the front wheel, b) the center of the pod, and c) the rear wheel.
 
-- The development requirements/dependencies for this sketch/library;
-- The testing and execution steps;
-- Expected output (i.e. a screenshot);
-- ***Read-only*** references to where other documentation (pinout diagrams, schematics, expected output, power requirements, etc.) can be found in the UTHT Google Drive.
+Outputs: Temperature (Celcius), range: -40 to 150 C
 
-## Feature Branches
+## TMP006
 
-One feature branch will exist for *each* sensor (i.e. "`sensor-vn200`" for the VN200), on which all changes for that sensor's code will be committed. Changes to other files *should* be avoided.
+Measures the temperature around the center of the pod. Sensor is intended to be used in auxiliary, to obtain diagnostic data for pod improvement.
 
-### Pull Requests (w/ Testing Documentation)
+Outputs:
+- Die temperature (Celcius), range: unspecified in official documentation
+- Object temperature (Celcius) (calculated from die temp and die voltage), range: -40 to 125 C
 
-Feature branches are to be pulled into a **staging** branch, and pull requests **MUST**:
-- Have the team leaders (Orest, Urmil) listed as "Reviewers" so that they can review the PR;
-- List a summary of changes made in the feature branch commits leading up to the PR;
-- Provide documentation proving working functionality (whoever is in possession of the sensor corresponding to the feature branch **MUST** be able to *clone*, *setup*, and *run* the code successfully - without modification - meeting the *expected output*);
+## OPT2002
 
-Upon confirmation of successful operation, the PR will be **squash merged** by one of the team leaders as a SemVer-compliant versioned change (i.e. "VN200 Test Sketch V0.1" for an early beta sketch, or "VN200 Library V1.0" for a well-tested library full release).
+Measures the distancee between the bottom of the pod’s frame to the top of the track I-beam. Used to inform emergency stopping procedures.
 
-### Production Releases
+Outputs:
+- Distance [mm], range: 30[mm] to 80[mm]
+- An indication if there exists an error(or if it cannot detect an object within the range) 
 
-When all sensor code is a working library release (i.e. can be imported by a single "main" sketch and run, with sub-dependancy libraries in one master "libraries" folder), then the staging branch will be *pulled* and *squash-merged* to master by the Team Leaders, and a SemVer-compliant GitHub release tag will be added.
+## VFS500-5-1001
+
+Monitors the flowrate of the watercooling loop.
+
+Outputs:
+- Frequency (Hz)
+- Flow rate (GPM), range: 0.26 to 5.28 GPM
+
+## MPU9250
+
+9-axis accelerometer, gyroscope, and magnetic field sensor. Sensor is intended to be used in auxiliary, obtained data for pod improvement.
+
+Outputs:
+- Acceleration X, Y, Z (milli-gees), range: ±2000 mg (default, configurable to up to +-16000 mg)
+- Gyro values X, Y, Z (deg/sec), range: ±250 deg/sec (default, configurable to up to +-2000 deg/sec)
+- Magnetic values X, Y, Z (milli-Gauss), range: ±48000 mG
+- Sensor temperature (C), range: -40 to 85 C
+
+# Actuators
+
+## Brakes
+
+Engages brakes via digital output control of a MOSFET driving a solenoid (NORMALLY OPEN, i.e. digital low = open solenoid = brakes engaged). Once engaged, brakes do not disengage. Fails safe (to engaged).

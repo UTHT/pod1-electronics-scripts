@@ -34,3 +34,5 @@
 # Other
 .vscode/
 .DS_Store
+
+.pio/
