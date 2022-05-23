@@ -35,7 +35,7 @@ Outputs:
 Measures the distancee between the bottom of the pod’s frame to the top of the track I-beam. Used to inform emergency stopping procedures.
 
 Outputs:
-- Distance [mm], range: 30[mm] to 80[mm]
+- Distance (mm), range: 30 to 80 mm
 - An indication if there exists an error(or if it cannot detect an object within the range) 
 
 ## VFS500-5-1001
@@ -61,3 +61,7 @@ Outputs:
 ## Brakes
 
 Engages brakes via digital output control of a MOSFET driving a solenoid (NORMALLY OPEN, i.e. digital low = open solenoid = brakes engaged). Once engaged, brakes do not disengage. Fails safe (to engaged).
+
+## Inverter Discharge Relay
+
+Discharges the inverter via digital output control of a MOSFET driving a relay (NORMALLY OFF, i.e. digital high = closed relay = inverter discharging). Fails safe (relay closed, discharging).
