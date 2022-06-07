@@ -29,7 +29,7 @@ errorlevel_t DCT200::read(float* data, uint8_t numdata) {
     float raw = analogRead(pin);
     if (raw < DCT200_OUT_MIN) {
       return ERR_FATAL;
-    })
+    }
     data[0] = raw;
     data[1] = ((raw - DCT200_IN_MIN) / (DCT200_IN_MAX - DCT200_IN_MIN) * (DCT200_OUT_MAX - DCT200_OUT_MIN) + DCT200_OUT_MIN);
     // TODO: other error conditions?
