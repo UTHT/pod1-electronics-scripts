@@ -15,7 +15,7 @@ errorlevel_t Brakes::initialize(void) {
 }
 
 errorlevel_t Brakes::set(float target) {
-  engaged |= (target != 0); //If engaged is true already, target doesn't matter (stay engaged)
-  digitalWrite(pin, !engaged); // Engaged = digital low
+  engaged |= ((int)target > 0); // Engages if target high, latching
+  digitalWrite(pin, !engaged);  // Engage (digital out LOW)
   return ERR_NONE;
 }
