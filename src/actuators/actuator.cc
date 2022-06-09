@@ -4,6 +4,13 @@
 
 #include <utils/base.h>
 
+const char* actuatorNames[] = {
+  "ACTUATOR_NULL",
+  "ACTUATOR_BRAKES",
+  "ACTUATOR_RELAY",
+  "ACTUATOR_INVERTER",
+};
+
 Actuator::Actuator(actuatorid_t actuatorid, float failtarget) {
   this->actuatorid = actuatorid;
   state.error = ERR_NONE;

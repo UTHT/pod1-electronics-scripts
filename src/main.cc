@@ -28,6 +28,7 @@
 
 bool post(void);
 int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, String units, int numData);
+int publishStatusToChannel(zcm_t* zcm, String sensorName, String statusMsg);
 
 zcm_t* zcm_arduino = NULL;
 
@@ -66,9 +67,10 @@ void loop(void) {
   if (zcm_arduino != NULL) {
     for (int i = 0; i < NUM_SENSORS; ++i) {
       SensorState* state = sensors[i]->update();
+      String sensorName = sensorNames[sensors[i]->getID()];
+
       if (state->error == ERR_NONE) {
         if (state->debug == DS_SUCCESS) {
-          String sensorName = sensorNames[sensors[i]->getID()];
           String labels = "";
           double values[state->numdata];
 
@@ -84,27 +86,25 @@ void loop(void) {
       } else if (state->error == ERR_WARNING) {
         String errorMessage = String("Failed to read from sensor " + String(sensors[i]->getID()) + " (non-fatal).");
 
-        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-        //       2) Send this error message via ZCM  
+        publishStatusToChannel(zcm_arduino, sensorName, errorMessage);
       } else if (state->error == ERR_FATAL) {
         String errorMessage = String("Failed to read from sensor " + String(sensors[i]->getID()) + " (FATAL, SENSOR DISABLED!).");
 
-        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-        //       2) Send this error message via ZCM   
+        publishStatusToChannel(zcm_arduino, sensorName, errorMessage);
       }
     }
     for (int i = 0; i < NUM_ACTUATORS; ++i) {
       ActuatorState* state = actuators[i]->update();
+      String actuatorName = actuatorNames[actuators[i]->getID()];
+
       if (state->error == ERR_WARNING) {
         String errorMessage = String("Failed to update actuator " + String(actuators[i]->getID()) + " (non-fatal).");
 
-        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-        //       2) Send this error message via ZCM 
+        publishStatusToChannel(zcm_arduino, actuatorName, errorMessage);
       } else if (state->error == ERR_FATAL) {
         String errorMessage = String("Failed to update actuator " + String(actuators[i]->getID()) + " (FATAL, ACTUATOR DISABLED!).");
 
-        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-        //       2) Send this error message via ZCM 
+        publishStatusToChannel(zcm_arduino, actuatorName, errorMessage);
       }
     }
 
@@ -120,37 +120,53 @@ bool post(void) {
   bool success = true;
   for (int i = 0; i < NUM_SENSORS; ++i) {
     SensorState* state = sensors[i]->begin();
+    String sensorName = sensorNames[sensors[i]->getID()];
+
     bool latest = (state->debug >= DS_INITIALIZED && state->error == ERR_NONE);
     if (latest) {
       String statusMessage = String("Sensor " + String(sensors[i]->getID()) + " initialized successfully.");
 
-      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-      //       2) Send this status message via ZCM 
+      publishStatusToChannel(zcm_arduino, sensorName, statusMessage);
     } else {
       String errorMessage = String("Failed to initialize sensor " + String(sensors[i]->getID()) + ". Check wiring.");
 
-      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-      //       2) Send this error message via ZCM     
+      publishStatusToChannel(zcm_arduino, sensorName, errorMessage);  
     }
     success &= latest;
   }
   for (int i = 0; i < NUM_ACTUATORS; ++i) {
     ActuatorState* state = actuators[i]->begin();
+    String actuatorName = actuatorNames[actuators[i]->getID()];
+
     bool latest = (state->debug >= DS_INITIALIZED && state->error == ERR_NONE);
     if (latest) {
       String statusMessage = String("Actuator " + String(actuators[i]->getID()) + " initialized successfully.");
 
-      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-      //       2) Send this status message via ZCM 
+      publishStatusToChannel(zcm_arduino, actuatorName, statusMessage);
     } else {
       String errorMessage = String("Failed to initialize actuator " + String(actuators[i]->getID()) + ". Check wiring.");
 
-      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
-      //       2) Send this error message via ZCM     
+      publishStatusToChannel(zcm_arduino, actuatorName, errorMessage);    
     }
     success &= latest;
   }
   return success;
+}
+
+
+int publishStatusToChannel(zcm_t* zcm, String sensorName, String statusMsg) {
+    channel_array message;
+    message.arduino_id = PCB;
+    message.sensor = (char *) sensorName.c_str();
+
+    // TODO: Test whether ZCM can take a NULL value or it needs to be a defined value
+    message.data = NULL;
+
+    message.units = "";
+    message.sz = 0;
+    message.statusMsg = (char *) statusMsg.c_str();
+
+    return channel_array_publish(zcm, sensorName.c_str(), &message);
 }
 
 int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, String units, int numData) {    
@@ -160,6 +176,7 @@ int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, Stri
   message.data = values;
   message.units = (char *) units.c_str();
   message.sz = numData;
+  message.statusMsg = "";
 
   return channel_array_publish(zcm, sensorName.c_str(), &message);
 }

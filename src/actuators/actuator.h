@@ -11,6 +11,9 @@ typedef enum actuatorid_t {
   ACTUATOR_INVERTER,
 } actuatorid_t;
 
+// Actuator identifiers map
+extern const char* actuatorNames[];
+
 // All actuator state info
 typedef struct ActuatorState {
   // Error level
