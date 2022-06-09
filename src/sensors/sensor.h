@@ -20,6 +20,9 @@ typedef enum sensorid_t {
   SENSOR_VFS500
 } sensorid_t;
 
+// Sensor identifiers map
+extern const char* sensorNames[];
+
 // Single datapoint
 typedef struct DataPoint {
   // Value

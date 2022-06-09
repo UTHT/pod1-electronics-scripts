@@ -6,6 +6,20 @@
 
 #include <utils/base.h>
 
+const char* sensorNames[] = {
+  "SENSOR_NULL",
+  "SENSOR_OPT2002",
+  "SENSOR_VN200",
+  "SENSOR_RTD",
+  "SENSOR_TMP006",
+  "SENSOR_MPU9250",
+  "SENSOR_DCT200",
+  "SENSOR_SPTD25_20_1000H",
+  "SENSOR_SPT25_20_0200A",
+  "SENSOR_INVERTER",
+  "SENSOR_VFS500"
+};
+
 Sensor::Sensor(sensorid_t sensorid, const SensorDataSetup* setup, uint32_t delta) {
   this->sensorid = sensorid;
   this->delta = delta;

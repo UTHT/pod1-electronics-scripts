@@ -21,7 +21,15 @@
 #include <sensors/sensor.h>
 #include <actuators/actuator.h>
 
+#include <zcm_utht.h>
+#include <transport.h>
+#include <arduino_cobs_serial_transport.hpp>
+#include <channel_array_msg.h>
+
 bool post(void);
+int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, String units, int numData);
+
+zcm_t* zcm_arduino = NULL;
 
 void setup(void) {
   // Status LED
@@ -34,9 +42,6 @@ void setup(void) {
     delay(1);
   }
 
-  // Send software revision first
-  JSONMessenger::sendRevision(REVISION);
-
   // Serial communications established, initialize sensors and actuators
   if (!post()) {
     // Failed POST, blink
@@ -46,18 +51,9 @@ void setup(void) {
       delay(250);
       digitalWrite(PIN_STATUS, LOW);
     }
+  } else {
+    zcm_arduino = create_zcm(PCB);
   }
-
-  // Await valid initial instruction set
-  String in;
-  do {
-    // Await instructions
-    while (!Serial.available());
-    in = Serial.readStringUntil('\n');
-
-    // Trim whitespace, newline terminator
-    in.trim();
-  } while (handleInstructions(in, &matrix) != ERR_NONE);
 
   // Enable the watchdog timer
   #if ENABLE_WATCHDOG
@@ -67,39 +63,57 @@ void setup(void) {
 }
 
 void loop(void) {
-  // Check for instructions
-  if (Serial.available()) {
-    String in = Serial.readStringUntil('\n');
-    in.trim();
-    handleInstructions(in, &matrix);
-  }
+  if (zcm_arduino != NULL) {
+    for (int i = 0; i < NUM_SENSORS; ++i) {
+      SensorState* state = sensors[i]->update();
+      if (state->error == ERR_NONE) {
+        if (state->debug == DS_SUCCESS) {
+          String sensorName = sensorNames[sensors[i]->getID()];
+          String labels = "";
+          double values[state->numdata];
 
-  for (int i = 0; i < NUM_SENSORS; ++i) {
-    SensorState* state = sensors[i]->update();
-    if (state->error == ERR_NONE) {
-      if (state->debug == DS_SUCCESS) {
-        for (int j = 0; j < state->numdata; ++j) {
-          JSONMessenger::sendData(state->data[j].label, state->data[j].value);
-        }
-      } // else do nothing
-    } else if (state->error == ERR_WARNING) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to read from sensor " + String(sensors[i]->getID()) + " (non-fatal)."));
-    } else if (state->error == ERR_FATAL) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to read from sensor " + String(sensors[i]->getID()) + " (FATAL, SENSOR DISABLED!)."));
-    }
-  }
-  for (int i = 0; i < NUM_ACTUATORS; ++i) {
-    ActuatorState* state = actuators[i]->update();
-    if (state->error == ERR_WARNING) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to update actuator " + String(actuators[i]->getID()) + " (non-fatal)."));
-    } else if (state->error == ERR_FATAL) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to update actuator " + String(actuators[i]->getID()) + " (FATAL, ACTUATOR DISABLED!)."));
-    }
-  }
+          // Append sensor values to array that would be sent via ZCM
+          for (int x = 0; x < state->numdata; x++) {
+              values[x] = state->data[x].value;
+              labels += state->data[x].label;
+              labels += ", ";
+          }
 
-  #if ENABLE_WATCHDOG
-    wdt_enable(WDTO_1S);
-  #endif
+          publishMessageToChannel(zcm_arduino, values, sensorName, labels, state->numdata);
+        } // else do nothing
+      } else if (state->error == ERR_WARNING) {
+        String errorMessage = String("Failed to read from sensor " + String(sensors[i]->getID()) + " (non-fatal).");
+
+        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+        //       2) Send this error message via ZCM  
+      } else if (state->error == ERR_FATAL) {
+        String errorMessage = String("Failed to read from sensor " + String(sensors[i]->getID()) + " (FATAL, SENSOR DISABLED!).");
+
+        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+        //       2) Send this error message via ZCM   
+      }
+    }
+    for (int i = 0; i < NUM_ACTUATORS; ++i) {
+      ActuatorState* state = actuators[i]->update();
+      if (state->error == ERR_WARNING) {
+        String errorMessage = String("Failed to update actuator " + String(actuators[i]->getID()) + " (non-fatal).");
+
+        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+        //       2) Send this error message via ZCM 
+      } else if (state->error == ERR_FATAL) {
+        String errorMessage = String("Failed to update actuator " + String(actuators[i]->getID()) + " (FATAL, ACTUATOR DISABLED!).");
+
+        // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+        //       2) Send this error message via ZCM 
+      }
+    }
+
+    #if ENABLE_WATCHDOG
+      wdt_enable(WDTO_1S);
+    #endif
+  } else {
+      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to initialize the ZCM serial transport layer."));
+  }
 }
 
 bool post(void) {
@@ -108,9 +122,15 @@ bool post(void) {
     SensorState* state = sensors[i]->begin();
     bool latest = (state->debug >= DS_INITIALIZED && state->error == ERR_NONE);
     if (latest) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Sensor " + String(sensors[i]->getID()) + " initialized successfully."));
+      String statusMessage = String("Sensor " + String(sensors[i]->getID()) + " initialized successfully.");
+
+      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+      //       2) Send this status message via ZCM 
     } else {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_ERROR, String("Failed to initialize sensor " + String(sensors[i]->getID()) + ". Check wiring."));
+      String errorMessage = String("Failed to initialize sensor " + String(sensors[i]->getID()) + ". Check wiring.");
+
+      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+      //       2) Send this error message via ZCM     
     }
     success &= latest;
   }
@@ -118,13 +138,30 @@ bool post(void) {
     ActuatorState* state = actuators[i]->begin();
     bool latest = (state->debug >= DS_INITIALIZED && state->error == ERR_NONE);
     if (latest) {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Actuator " + String(actuators[i]->getID()) + " initialized successfully."));
+      String statusMessage = String("Actuator " + String(actuators[i]->getID()) + " initialized successfully.");
+
+      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+      //       2) Send this status message via ZCM 
     } else {
-      JSONMessenger::sendMessage(JSONMessenger::MESSAGE_DEBUG, String("Failed to initialize actuator " + String(actuators[i]->getID()) + ". Check wiring."));
+      String errorMessage = String("Failed to initialize actuator " + String(actuators[i]->getID()) + ". Check wiring.");
+
+      // TODO: 1) Add "statusMsg" field to channel_array_msg ZCM message
+      //       2) Send this error message via ZCM     
     }
     success &= latest;
   }
   return success;
+}
+
+int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, String units, int numData) {    
+  channel_array message;
+  message.arduino_id = PCB;
+  message.sensor = (char *) sensorName.c_str();
+  message.data = values;
+  message.units = (char *) units.c_str();
+  message.sz = numData;
+
+  return channel_array_publish(zcm, sensorName.c_str(), &message);
 }
 
 #endif
