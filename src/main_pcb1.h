@@ -11,6 +11,8 @@
 #include <sensors/sptd25_20_1000h.h>
 #include <sensors/tmp006.h>
 
+// Test
+
 // Settings
 #define ENABLE_WATCHDOG false
 
