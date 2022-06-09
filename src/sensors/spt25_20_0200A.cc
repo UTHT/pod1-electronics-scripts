@@ -16,7 +16,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-SPT25_20_0200A::SPT25_20_0200A(uint8_t pin) : Sensor(SENSOR_SPT25_20_0200A, &datasetup, SPT25_20_0200A_DELTA) {
+SPT25_20_0200A::SPT25_20_0200A(uint8_t pin) : Sensor(SENSOR_SPT25_20_0200A, SPT25_20_0200A_NAME, &datasetup, SPT25_20_0200A_DELTA) {
     this->pin = pin;
 }
 

@@ -1,11 +1,12 @@
 #ifndef UTHT_SENSORS_RTD_H_
 #define UTHT_SENSORS_RTD_H_
 
-#define RTD_DELTA 250
-#define RTD_IN_MIN 204.8 // 4mA x 165ohm / 3.3V x 1023
-#define RTD_IN_MAX 1023 // 20mA x 165ohm / 3.3V  x 1023
-#define RTD_OUT_MIN -40
-#define RTD_OUT_MAX 150
+#define RTD_NAME      "Pt100 RTD"
+#define RTD_DELTA     250
+#define RTD_IN_MIN    204.8 // 4mA x 165ohm / 3.3V x 1023
+#define RTD_IN_MAX    1023 // 20mA x 165ohm / 3.3V  x 1023
+#define RTD_OUT_MIN   -40
+#define RTD_OUT_MAX   150
 
 #include <Arduino.h>
 

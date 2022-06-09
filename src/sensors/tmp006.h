@@ -1,6 +1,7 @@
 #ifndef UTHT_SENSORS_TMP006_H_
 #define UTHT_SENSORS_TMP006_H_
 
+#define TMP006_NAME "TMP006"
 #define TMP006_DELTA 250
 #define TMP006_IN_MIN 204.8 // 4mA x 165ohm / 3.3V x 1023
 #define TMP006_IN_MAX 1023 // 20mA x 165ohm / 3.3V  x 1023

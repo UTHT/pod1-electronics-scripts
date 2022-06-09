@@ -4,10 +4,11 @@
 
 #include <utils/base.h>
 
-Actuator::Actuator(actuatorid_t actuatorid, float failtarget) {
+Actuator::Actuator(actuatorid_t actuatorid, const char* name, float failtarget) {
   this->actuatorid = actuatorid;
   state.error = ERR_NONE;
   state.debug = DS_DISABLED;
+  this->name = name;
 
   // Default start target
   target = this->failtarget = failtarget;
@@ -68,6 +69,10 @@ ActuatorState* Actuator::getState(void) {
 
 actuatorid_t Actuator::getID(void) {
   return actuatorid;
+}
+
+const char* Actuator::getName(void) {
+  return name;
 }
 
 void Actuator::setTarget(float target) {

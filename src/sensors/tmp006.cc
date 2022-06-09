@@ -20,7 +20,7 @@ static const SensorDataSetup datasetup = {
 void write16(uint8_t address, uint8_t a, uint16_t d);
 uint16_t read16(uint8_t address, uint8_t a);
 
-TMP006::TMP006(uint8_t address) : Sensor(SENSOR_TMP006, &datasetup, TMP006_DELTA){
+TMP006::TMP006(uint8_t address) : Sensor(SENSOR_TMP006, TMP006_NAME, &datasetup, TMP006_DELTA){
     this->address = address;
 }
 

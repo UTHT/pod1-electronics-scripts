@@ -152,7 +152,8 @@
 #define MPU9250_ASCALE  MPU9250::AFS_2G
 #define MPU9250_MSCALE  MPU9250::MFS_16BITS
 #define MPU9250_MMODE   MPU9250::M_8HZ
-#define MPU9250_DELTA 100
+#define MPU9250_DELTA   100
+#define MPU9250_NAME     "DCT200"
 
 #include <Arduino.h>
 #include <Wire.h>

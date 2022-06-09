@@ -6,6 +6,8 @@
 #include <utils/base.h>
 #include <actuators/actuator.h>
 
+#define BRAKES_NAME "Braking Solenoid"
+
 class Brakes : public Actuator {
   public:
     /**

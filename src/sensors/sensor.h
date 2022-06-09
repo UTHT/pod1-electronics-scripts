@@ -60,10 +60,11 @@ class Sensor {
     /**
      * Sensor interface constructor.
      * @param sensor Identifier
+     * @param name Human-readable name
      * @param setup Pointer to datasets setup
      * @param delta Minimum delay (in milliseconds) between sensor read attempts
      */
-    Sensor(sensorid_t sensorid, const SensorDataSetup* setup, uint32_t delta);
+    Sensor(sensorid_t sensorid, const char* name, const SensorDataSetup* setup, uint32_t delta);
     
     /** Wrapper function for `initialize()`. Sets debug state to indicate initialization success or failure.
      * @return Pointer to sensor state
@@ -81,6 +82,9 @@ class Sensor {
 
     // @return Sensor identifier
     sensorid_t getID(void);
+
+    // @return Sensor name
+    const char* getName(void);
 
   protected:
     /** 
@@ -103,6 +107,9 @@ class Sensor {
   
     // Sensor identifier
     sensorid_t sensorid;
+
+    // Sensor name
+    const char* name;
 
     // Minimum delay (in milliseconds) between sensor read attempts
     uint32_t delta;

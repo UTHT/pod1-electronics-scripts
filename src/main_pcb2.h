@@ -5,7 +5,7 @@
 
 #include <sensors/sensor.h>
 #include <actuators/actuator.h>
-#include <utils/instructions.h>
+#include <utils/zcm/zcm.h>
 #include <sensors/opt2002.h>
 #include <sensors/dct200.h>
 // #include <sensors/mpu9250.h>
@@ -18,6 +18,9 @@
 #define NUM_ACTUATORS 0
 #define REVISION      0
 #define BAUDRATE      115200
+#ifndef PCB
+  #define PCB 2
+#endif
 
 // Pins
 #define PIN_STATUS          13
@@ -40,13 +43,5 @@ Sensor* sensors [NUM_SENSORS] = {
 // Actuators
 
 Actuator* actuators [NUM_ACTUATORS] = { };
-
-const char* instr [NUM_ACTUATORS] = { };
-
-static const InstructionActuatorMatrix matrix = {
-  NUM_ACTUATORS,
-  actuators,
-  instr
-};
 
 #endif

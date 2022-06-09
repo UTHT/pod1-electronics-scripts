@@ -16,7 +16,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-OPT2002::OPT2002(uint8_t pin) : Sensor(SENSOR_OPT2002, &datasetup, OPT2002_DELTA){
+OPT2002::OPT2002(uint8_t pin) : Sensor(SENSOR_OPT2002, OPT2002_NAME, &datasetup, OPT2002_DELTA){
     this->pin = pin;
 }
 

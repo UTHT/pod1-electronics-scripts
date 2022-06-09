@@ -23,7 +23,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-MPU9250::MPU9250(uint8_t address) : Sensor(SENSOR_MPU9250, &datasetup, MPU9250_DELTA) {
+MPU9250::MPU9250(uint8_t address) : Sensor(SENSOR_MPU9250, MPU9250_NAME, &datasetup, MPU9250_DELTA) {
   this->address = address;
 }
 

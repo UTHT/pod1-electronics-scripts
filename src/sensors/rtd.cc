@@ -15,7 +15,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-RTD::RTD(uint8_t pin) : Sensor(SENSOR_RTD, &datasetup, RTD_DELTA) {
+RTD::RTD(uint8_t pin) : Sensor(SENSOR_RTD, RTD_NAME, &datasetup, RTD_DELTA) {
     this->pin = pin;
 }
 

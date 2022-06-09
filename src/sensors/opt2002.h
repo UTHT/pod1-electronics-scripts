@@ -1,9 +1,10 @@
 #ifndef UTHT_SENSORS_OPT2002_H_
 #define UTHT_SENSORS_OPT2002_H_
 
-#define OPT2002_DELTA 100
-#define OPT2002_IN_MIN 0 // 4mA x 165ohm / 3.3V x 1023
-#define OPT2002_IN_MAX 1023 // 20mA x 165ohm / 3.3V  x 1023
+#define OPT2002_NAME    "OPT2002"
+#define OPT2002_DELTA   100
+#define OPT2002_IN_MIN  0 // 4mA x 165ohm / 3.3V x 1023
+#define OPT2002_IN_MAX  1023 // 20mA x 165ohm / 3.3V  x 1023
 #define OPT2002_OUT_MIN 30
 #define OPT2002_OUT_MAX 80
 

@@ -15,7 +15,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-VFS500::VFS500(uint8_t pin) : Sensor(SENSOR_VFS500, &datasetup, 250){
+VFS500::VFS500(uint8_t pin) : Sensor(SENSOR_VFS500, VFS500_NAME, &datasetup, 250){
     this->pin = pin;
 }
 

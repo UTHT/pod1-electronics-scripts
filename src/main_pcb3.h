@@ -5,7 +5,7 @@
 
 #include <sensors/sensor.h>
 #include <actuators/actuator.h>
-#include <utils/instructions.h>
+#include <utils/zcm/zcm.h>
 #include <sensors/rtd.h>
 #include <sensors/vfs500.h>
 #include <actuators/relay.h>
@@ -19,6 +19,9 @@
 #define NUM_ACTUATORS 2
 #define REVISION      0
 #define BAUDRATE      115200
+#ifndef PCB
+  #define PCB 3
+#endif
 
 // Pins
 #define PIN_STATUS          13
@@ -46,17 +49,6 @@ Brakes brakes = Brakes(PIN_BRAKES);
 Actuator* actuators [NUM_ACTUATORS] = { 
   &relay,
   &brakes,
-};
-
-const char* instr [NUM_ACTUATORS] = { 
-  "relay",
-  "brakes",
-};
-
-static const InstructionActuatorMatrix matrix = {
-  NUM_ACTUATORS,
-  actuators,
-  instr
 };
 
 #endif

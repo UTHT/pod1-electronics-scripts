@@ -5,7 +5,7 @@
 #include <utils/base.h>
 #include <actuators/actuator.h>
 
-Brakes::Brakes(uint8_t pin) : Actuator(ACTUATOR_BRAKES, 0) {
+Brakes::Brakes(uint8_t pin) : Actuator(ACTUATOR_BRAKES, BRAKES_NAME, 0) {
   this->pin = pin;
 }
 

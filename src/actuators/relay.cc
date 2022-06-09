@@ -5,7 +5,7 @@
 #include <utils/base.h>
 #include <actuators/actuator.h>
 
-Relay::Relay(uint8_t pin) : Actuator(ACTUATOR_RELAY, 1) {
+Relay::Relay(uint8_t pin) : Actuator(ACTUATOR_RELAY, RELAY_NAME, 1) {
   this->pin = pin;
 }
 

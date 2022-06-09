@@ -1,11 +1,12 @@
 #ifndef UTHT_SENSORS_VFS500_H_
 #define UTHT_SENSORS_VFS500_H_
 
-#define VFS500_DELTA 250
-#define VFS500_IN_MIN 0
-#define VFS500_IN_MAX 100
-#define VFS500_OUT_MIN 0.26
-#define VFS500_OUT_MAX 5.28
+#define VFS500_NAME     "VFS500"
+#define VFS500_DELTA    250
+#define VFS500_IN_MIN   0
+#define VFS500_IN_MAX   100
+#define VFS500_OUT_MIN  0.26
+#define VFS500_OUT_MAX  5.28
 
 #include <Arduino.h>
 

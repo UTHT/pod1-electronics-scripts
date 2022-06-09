@@ -6,9 +6,10 @@
 
 #include <utils/base.h>
 
-Sensor::Sensor(sensorid_t sensorid, const SensorDataSetup* setup, uint32_t delta) {
+Sensor::Sensor(sensorid_t sensorid, const char* name, const SensorDataSetup* setup, uint32_t delta) {
   this->sensorid = sensorid;
   this->delta = delta;
+  this->name = name;
 
   // Initial error and debug states
   state.error = ERR_NONE;
@@ -86,4 +87,8 @@ SensorState* Sensor::getState(void) {
 
 sensorid_t Sensor::getID(void) {
   return sensorid;
+}
+
+const char* Sensor::getName(void) {
+  return name;
 }

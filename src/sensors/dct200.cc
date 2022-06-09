@@ -16,7 +16,7 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-DCT200::DCT200(uint8_t pin) : Sensor(SENSOR_DCT200, &datasetup, DCT200_DELTA){
+DCT200::DCT200(uint8_t pin) : Sensor(SENSOR_DCT200, DCT200_NAME, &datasetup, DCT200_DELTA){
     this->pin = pin;
 }
 

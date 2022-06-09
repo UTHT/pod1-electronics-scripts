@@ -27,9 +27,10 @@ class Actuator {
   public:
     /**
      * @param actuatorid Identifier
+     * @param name Human-readable name
      * @param failtarget Target that the actuator should be set to in case of failure
      */
-    Actuator(actuatorid_t actuatorid, float failtarget);
+    Actuator(actuatorid_t actuatorid, const char* name, float failtarget);
 
     /**
      * Wrapper function for `set()`. Checks debug state (initialized).
@@ -48,6 +49,9 @@ class Actuator {
 
     // @return Actuator identifier
     actuatorid_t getID(void);
+
+    // @return Actuator name
+    const char* getName(void);
 
     // @param target Actuator target
     void setTarget(float target);
@@ -72,6 +76,9 @@ class Actuator {
 
     // Actuator identifier
     actuatorid_t actuatorid;
+
+    // Actuator name
+    const char* name;
 
     // Failsafe target
     float failtarget;
