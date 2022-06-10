@@ -8,6 +8,7 @@
 #include <utils/zcm/zcm.h>
 #include <sensors/rtd.h>
 #include <sensors/vfs500.h>
+#include <sensors/VN200.h>
 #include <actuators/relay.h>
 #include <actuators/brakes.h>
 
@@ -35,6 +36,7 @@
 RTD rtd_1 = RTD(PIN_RTD_1);
 RTD rtd_2 = RTD(PIN_RTD_2);
 VFS500 vfs500 = VFS500(PIN_VFS);
+VN200 vn200 = VN200();
 
 Sensor* sensors[NUM_SENSORS] = { 
   &rtd_1,
