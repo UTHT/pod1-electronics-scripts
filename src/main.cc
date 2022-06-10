@@ -33,15 +33,11 @@ int publishStatusToChannel(zcm_t* zcm, String sensorName, String statusMsg);
 zcm_t* zcm_arduino = NULL;
 
 void setup(void) {
+  zcm_arduino = create_zcm(0);
+
   // Status LED
   pinMode(PIN_STATUS, OUTPUT);
   digitalWrite(PIN_STATUS, LOW);
-
-  // Await serial start
-  Serial.begin(BAUDRATE);
-  while (!Serial) {
-    delay(1);
-  }
 
   // Serial communications established, initialize sensors and actuators
   if (!post()) {
@@ -52,8 +48,6 @@ void setup(void) {
       delay(250);
       digitalWrite(PIN_STATUS, LOW);
     }
-  } else {
-    zcm_arduino = create_zcm(PCB);
   }
 
   // Enable the watchdog timer
@@ -65,6 +59,8 @@ void setup(void) {
 
 void loop(void) {
   if (zcm_arduino != NULL) {
+    zcm_handle_nonblock(zcm_arduino);
+
     for (int i = 0; i < NUM_SENSORS; ++i) {
       SensorState* state = sensors[i]->update();
       String sensorName = sensorNames[sensors[i]->getID()];
@@ -176,7 +172,9 @@ int publishMessageToChannel(zcm_t* zcm, double values[], String sensorName, Stri
   message.data = values;
   message.units = (char *) units.c_str();
   message.sz = numData;
-  message.statusMsg = "";
+
+  String noStatus = "";
+  message.statusMsg = (char *) noStatus.c_str();
 
   return channel_array_publish(zcm, sensorName.c_str(), &message);
 }
