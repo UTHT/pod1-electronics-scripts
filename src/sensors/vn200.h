@@ -8,14 +8,36 @@
 
 #include <sensors/sensor.h>
 
-#define VN200_NAME  "VN200"
-#define VN200_DELTA 250
-#define VN200_BAUD  115200
-#define VN200_PORT  ""
+#define VN200_NAME      "VN200"
+#define VN200_DELTA     250
+#define VN200_BAUD      115200
+#define VN200_PORT      ""
+#define VN200_TIMEOUT   500
+#define VN200_IMURATE   200
+#define VN200_ASYNCPORT 1
 
 typedef union { unsigned short s; unsigned char b[2]; } VNChecksum;
 typedef union { float f; unsigned char b[4]; } VNData;
 typedef union { double d; unsigned char b[8]; } VNBigData;
+
+enum CommonGroup {
+	COMMONGROUP_NONE				= 0x0000,	///< None.
+	COMMONGROUP_TIMESTARTUP			= 0x0001,	///< TimeStartup.
+	COMMONGROUP_TIMEGPS				= 0x0002,	///< TimeGps.
+	COMMONGROUP_TIMESYNCIN			= 0x0004,	///< TimeSyncIn.
+	COMMONGROUP_YAWPITCHROLL		= 0x0008,	///< YawPitchRoll.
+	COMMONGROUP_QUATERNION			= 0x0010,	///< Quaternion.
+	COMMONGROUP_ANGULARRATE			= 0x0020,	///< AngularRate.
+	COMMONGROUP_POSITION			= 0x0040,	///< Position.
+	COMMONGROUP_VELOCITY			= 0x0080,	///< Velocity.
+	COMMONGROUP_ACCEL				= 0x0100,	///< Accel.
+	COMMONGROUP_IMU					= 0x0200,	///< Imu.
+	COMMONGROUP_MAGPRES				= 0x0400,	///< MagPres.
+	COMMONGROUP_DELTATHETA			= 0x0800,	///< DeltaTheta.
+	COMMONGROUP_INSSTATUS			= 0x1000,	///< InsStatus.
+	COMMONGROUP_SYNCINCNT			= 0x2000,	///< SyncInCnt.
+	COMMONGROUP_TIMEGPSPPS			= 0x4000	///< TimeGpsPps.
+};
 
 class VN200 : public Sensor {
   public:

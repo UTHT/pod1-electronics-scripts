@@ -1,20 +1,20 @@
 #include <sensors/vn200.h>
 
 #include <Arduino.h>
-#include "sensors.h"
-#include "types.h"
-#include "int.h"
-#include "nocopy.h"
-#include "packetfinder.h"
-#include "export.h"
-#include "registers.h"
+// #include "sensors.h"
+// #include "types.h"
+// #include "int.h"
+// #include "nocopy.h"
+// #include "packetfinder.h"
+// #include "export.h"
+// #include "registers.h"
 
 #include <utils/base.h>
 #include <sensors/sensor.h>
 
 // Namespaces
-using namespace vn::protocol::uart;
-using namespace vn::xplat;
+// using namespace vn::protocol::uart;
+// using namespace vn::xplat;
 
 // Declarations
 bool check_sync_byte(void);
@@ -42,35 +42,33 @@ VN200::VN200(void) : Sensor(SENSOR_VN200, VN200_NAME, &datasetup, VN200_DELTA) {
 errorlevel_t VN200::initialize(void) {
     // Start Serial1 for IMU communication and connect
     Serial1.begin(VN200_BAUD);
-    vn200.connect(VN200_PORT, VN200_BAUD);
+    // vn200.connect(VN200_PORT, VN200_BAUD);
 
     // Check connectivity
-    if(!vn200.verifySensorConnectivity()) {
+    if(!checkConnection()) {
         return ERR_FATAL;
     }
 
     // Make sure no generic async output is registered
     vn200.writeAsyncDataOutputType(VNOFF);
-
-    // Sensor Register Configuration
-	vn::sensors::BinaryOutputRegister bor(
-		ASYNCMODE_PORT1, // Async Port 1 is equivalent to Register 75
-		200,             // IMU Rate: 800(default) / 200 = 4 [Hz]
-		COMMONGROUP_YAWPITCHROLL
+        size_t length = sprintf(buffer, "$VNWRG,06,%u", ador);
+    
+    // Sensor register config
+    char toSend[256];
+    int length = sprintf(toSend, "$VNWRG,%u,%u,%u,%X,%X,%X,%X,%X,%X,%X,%X*", 
+        74 + VN200_ASYNCPORT, 
+        1, 
+        VN200_IMURATE, 
+        0b1111111, 
+        COMMONGROUP_YAWPITCHROLL
 		| COMMONGROUP_ANGULARRATE
 		| COMMONGROUP_POSITION
 		| COMMONGROUP_VELOCITY
 		| COMMONGROUP_ACCEL
-		| COMMONGROUP_MAGPRES,
-		TIMEGROUP_NONE,
-		IMUGROUP_NONE,
-		GPSGROUP_NONE,
-		ATTITUDEGROUP_NONE,
-		INSGROUP_NONE,
-        GPSGROUP_NONE);
-    
-    // Sensor should asynchronously output messages at the indicated IMU rate
-    vn200.writeBinaryOutput1(bor);
+		| COMMONGROUP_MAGPRES, 
+        0, 0, 0, 0, 0, 0);
+    length = finalizeCommandToSend(toSend, length);
+    Serial1.print(toSend);
 
     return ERR_NONE;
 }
@@ -145,10 +143,11 @@ errorlevel_t VN200::read(float* data, uint8_t numdata) {
 
 // Check for the sync byte (0xFA)
 bool check_sync_byte(void) {
+    char x;
     for (int i = 0; i < 6; i++)
     { // not sure why 6 specifically, entire function copied from reference
-        Serial1.readBytes(in, 1);
-        if (in[0] == 0xFA)
+        Serial1.readBytes(&x, 1);
+        if (x == 0xFA)
         {
             return true;
         }
@@ -169,4 +168,36 @@ unsigned short calculate_imu_crc(unsigned char data[], unsigned int length) {
         crc ^= (crc & 0x00ff) << 5;
     }
     return crc;
+}
+
+bool checkConnection(void) {
+    char toSend[17];
+
+    size_t length = sprintf(toSend, "$VNRRG,01*");
+    length = finalizeCommandToSend(toSend, length);
+    Serial.print(toSend);
+
+    long time = millis();
+    while(!Serial1.available()) {
+        if(millis() - time > VN200_TIMEOUT) {
+            return false;
+        }
+    }
+
+    // Got a response
+    return true;
+}
+
+uint8_t computeChecksum(char const data[], size_t length) {
+	uint8_t xorVal = 0;
+	for (size_t i = 0; i < length; i++)
+	{
+		xorVal ^= data[i];
+	}
+	return xorVal;
+}
+
+size_t finalizeCommandToSend(char *toSend, size_t length) {
+    length += sprintf(toSend + length, "%02X\r\n", computeChecksum(toSend + 1, length - 2));
+    return length;
 }
