@@ -18,7 +18,9 @@
 #define NUM_SENSORS   3
 #define NUM_ACTUATORS 1
 #define REVISION      0
-#define CANBUS_BAUD   250000
+#define BAUDRATE      115200
+#define ENABLE_SERIAL 1
+#define ENABLE_ZCM    0
 #ifndef PCB
   #define PCB 2
 #endif
