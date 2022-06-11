@@ -1,7 +1,8 @@
-#ifndef UTHT_ACTUATORS_INVERTER_H_
-#define UTHT_ACTUATORS_INVERTER_H_
+#ifndef UTHT_INTERFACES_INVERTER_H_
+#define UTHT_INTERFACES_INVERTER_H_
 
 #include <Arduino.h>
+#include "Serial_CAN_Module.h"
 
 #include <utils/base.h>
 #include <interfaces/interface.h>
@@ -18,10 +19,9 @@ class Inverter : public Interface {
     /**
      * Constructor.
      * @param canbus Serial CAN bus interface.
-     * @param tx
-     * @param rx
+     * @param serial Serial port.
      */
-    Inverter(Serial_CAN* canbus, uint8_t tx, uint8_t rx);
+    Inverter(Serial_CAN* canbus, HardwareSerial &serial);
   private:
     errorlevel_t initialize(void) override;
     errorlevel_t set(float target) override;

@@ -16,9 +16,9 @@ static const SensorDataSetup datasetup = {
   .labels = labels
 };
 
-Inverter::Inverter(Serial_CAN* canbus, uint8_t tx, uint8_t rx) : Interface(INTERFACE_INVERTER, INVERTER_NAME, &datasetup, INVERTER_DELTA, INVERTER_FAILTARGET) {
+Inverter::Inverter(Serial_CAN* canbus, HardwareSerial &serial) : Interface(INTERFACE_INVERTER, INVERTER_NAME, &datasetup, INVERTER_DELTA, INVERTER_FAILTARGET) {
   this->canbus = canbus;
-  canbus->begin(tx, rx, INVERTER_BAUD);
+  canbus->begin(serial, INVERTER_BAUD);
 }
 
 errorlevel_t Inverter::initialize(void) {
