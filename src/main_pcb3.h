@@ -19,6 +19,8 @@
 #define NUM_ACTUATORS 2
 #define REVISION      0
 #define BAUDRATE      115200
+#define ENABLE_SERIAL 1
+#define ENABLE_ZCM    0
 #ifndef PCB
   #define PCB 3
 #endif
