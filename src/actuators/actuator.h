@@ -7,8 +7,7 @@
 typedef enum actuatorid_t {
   ACTUATOR_NULL,
   ACTUATOR_BRAKES,
-  ACTUATOR_RELAY,
-  ACTUATOR_INVERTER,
+  ACTUATOR_RELAY
 } actuatorid_t;
 
 // All actuator state info
@@ -45,13 +44,13 @@ class Actuator {
     ActuatorState* begin(void);
 
     // @return Pointer to actuator state
-    ActuatorState* getState(void);
+    ActuatorState* getActuatorState(void);
 
     // @return Actuator identifier
-    actuatorid_t getID(void);
+    actuatorid_t getActuatorID(void);
 
     // @return Actuator name
-    const char* getName(void);
+    const char* getActuatorName(void);
 
     // @param target Actuator target
     void setTarget(float target);

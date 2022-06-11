@@ -78,13 +78,13 @@ class Sensor {
     SensorState* update(void);
 
     // @return Pointer to sensor state
-    SensorState* getState(void);
+    SensorState* getSensorState(void);
 
     // @return Sensor identifier
-    sensorid_t getID(void);
+    sensorid_t getSensorID(void);
 
     // @return Sensor name
-    const char* getName(void);
+    const char* getSensorName(void);
 
   protected:
     /** 

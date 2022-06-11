@@ -5,7 +5,6 @@
 
 #include <sensors/sensor.h>
 #include <actuators/actuator.h>
-#include <utils/zcm/zcm.h>
 #include <sensors/rtd.h>
 #include <sensors/vfs500.h>
 #include <actuators/relay.h>
@@ -18,7 +17,6 @@
 #define NUM_SENSORS   3
 #define NUM_ACTUATORS 2
 #define REVISION      0
-#define BAUDRATE      115200
 #ifndef PCB
   #define PCB 3
 #endif

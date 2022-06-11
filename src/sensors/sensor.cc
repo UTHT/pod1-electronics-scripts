@@ -81,14 +81,14 @@ SensorState* Sensor::update(void) {
   return &state;
 }
 
-SensorState* Sensor::getState(void) {
+SensorState* Sensor::getSensorState(void) {
   return &state;
 }
 
-sensorid_t Sensor::getID(void) {
+sensorid_t Sensor::getSensorID(void) {
   return sensorid;
 }
 
-const char* Sensor::getName(void) {
+const char* Sensor::getSensorName(void) {
   return name;
 }

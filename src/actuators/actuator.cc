@@ -63,15 +63,15 @@ ActuatorState* Actuator::update(void) {
   return &state;
 }
 
-ActuatorState* Actuator::getState(void) {
+ActuatorState* Actuator::getActuatorState(void) {
   return &state;
 }
 
-actuatorid_t Actuator::getID(void) {
+actuatorid_t Actuator::getActuatorID(void) {
   return actuatorid;
 }
 
-const char* Actuator::getName(void) {
+const char* Actuator::getActuatorName(void) {
   return name;
 }
 

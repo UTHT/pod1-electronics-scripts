@@ -6,7 +6,8 @@
 #include <utils/base.h>
 #include <actuators/actuator.h>
 
-#define RELAY_NAME "Inverter Discharge Relay"
+#define RELAY_NAME        "Inverter Discharge Relay"
+#define RELAY_FAILTARGET  1
 
 class Relay : public Actuator {
   public:

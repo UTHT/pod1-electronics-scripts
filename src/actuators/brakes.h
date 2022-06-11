@@ -7,6 +7,7 @@
 #include <actuators/actuator.h>
 
 #define BRAKES_NAME "Braking Solenoid"
+#define BRAKES_FAILTARGET 0
 
 class Brakes : public Actuator {
   public:

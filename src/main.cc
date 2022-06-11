@@ -76,7 +76,7 @@ void loop(void) {
           }
           units += "]";
           
-          ZCM::publish(zcm_interface, PCB, values, state->numdata, String(sensors[i]->getName()), units);
+          ZCM::publish(zcm_interface, PCB, values, state->numdata, String(sensors[i]->getSensorName()), units);
         }
       }
     }
